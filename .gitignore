@@ -1,3 +1,6 @@
+# ===================================================================
+# Arquivos de Log e Build do Maven
+# ===================================================================
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -6,12 +9,67 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
-# https://maven.apache.org/wrapper/#usage-without-binary-jar
-.mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
+# ===================================================================
+# Configurações de Ambiente e Arquivos Sensíveis e que não devem ir ao git
+# ===================================================================
+*.env
+application-*.properties
+!application.properties
+
+# ===================================================================
+# Arquivos de IDE
+# ===================================================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Visual Studio Code
+.vscode/
+
+# Eclipse / STS
 .project
-# JDT-specific (Eclipse Java Development Tools)
 .classpath
+.settings/
+.springBeans
+.apt_generated
+.factorypath
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ===================================================================
+# Arquivos do Sistema Operacional e Diversos
+# ===================================================================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.temp
+
+# ===================================================================
+# Node.js e Frontend
+# ===================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===================================================================
+# Arquivos gerados pelo projeto (padrão)
+# ===================================================================
+HELP.md

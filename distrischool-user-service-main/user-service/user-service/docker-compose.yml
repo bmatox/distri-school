@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16
+    container_name: users-db
+    environment:
+      POSTGRES_DB: distrischool_users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d distrischool_users"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+
+  user-service:
+    build:
+      context: . # <- a PASTA atual (onde estão pom.xml, Dockerfile e src)
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/distrischool_users
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/distrischool_users
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  users_db_data:

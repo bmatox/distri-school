@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aluno-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aluno
+  template:
+    metadata:
+      labels:
+        app: aluno
+    spec:
+      containers:
+        - name: aluno-service
+          image: distrischool-aluno-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+          env:
+            # --- Configurações de Banco de Dados ---
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-service:5432/distrischool_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "postgres"
+            # --- Configurações de Schema ---
+            - name: SPRING_FLYWAY_SCHEMAS
+              value: "aluno_schema"
+            - name: SPRING_FLYWAY_CREATE_SCHEMAS
+              value: "true"
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA
+              value: "aluno_schema"
+
+            # --- Configurações do RabbitMQ ---
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq-service"
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              value: "guest"
+            - name: SPRING_RABBITMQ_PASSWORD
+              value: "guest"

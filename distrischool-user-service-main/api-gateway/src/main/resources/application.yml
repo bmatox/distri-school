@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://user-service:8080
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1   # /api/users -> /users no user-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+
+app:
+  cors:
+    allowed-origins: "http://localhost:3000,http://127.0.0.1:3000"
+    allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    allowed-headers: "*"
+    allow-credentials: true

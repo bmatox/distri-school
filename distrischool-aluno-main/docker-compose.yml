@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # 1. SERVIÇO DA API (AlunoService)
+  app:
+    build: .
+    container_name: distrischool-alunos-service
+    ports:
+      - "8082:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/distrischool_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    depends_on:
+      db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - distrischool_network
+
+  # 2. SERVIÇO DO BANCO DE DADOS (PostgreSQL)
+  db:
+    image: postgres:14
+    container_name: postgres-db-alunos
+    environment:
+      POSTGRES_DB: distrischool_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - distrischool_network
+
+  # 3. SERVIÇO DE MENSAGERIA (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: distrischool-rabbitmq
+    ports:
+      # cliente
+      - "5672:5672"
+      # interface de gerenciamento web
+      - "15672:15672"
+    networks:
+      - distrischool_network
+    healthcheck:
+      test: ["CMD", "sh", "-c", "rabbitmqctl status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+# Redes e Volumes
+volumes:
+  postgres_data: { }
+
+networks:
+  distrischool_network:
+    driver: bridge
