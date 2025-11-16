@@ -1,0 +1,165 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  # Job para detectar quais serviços foram modificados
+  detect-changes:
+    runs-on: ubuntu-latest
+    # Só executa se o CI passou com sucesso
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      professor-service: ${{ steps.filter.outputs.professor-service }}
+      api-gateway: ${{ steps.filter.outputs.api-gateway }}
+      grades-service: ${{ steps.filter.outputs.grades-service }}
+      communication-service: ${{ steps.filter.outputs.communication-service }}
+      aluno-service: ${{ steps.filter.outputs.aluno-service }}
+      user-service: ${{ steps.filter.outputs.user-service }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            professor-service:
+              - 'professor-service/**'
+            api-gateway:
+              - 'api-gateway/**'
+            grades-service:
+              - 'grades-service/**'
+            communication-service:
+              - 'communication-service/**'
+            aluno-service:
+              - 'distrischool-aluno-main/**'
+            user-service:
+              - 'distrischool-user-service-main/user-service/**'
+
+  # Job para build e push de imagens Docker dos serviços backend
+  build-push-backend:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    strategy:
+      matrix:
+        service:
+          - name: professor-service
+            path: professor-service
+          - name: api-gateway
+            path: api-gateway
+          - name: grades-service
+            path: grades-service
+          - name: communication-service
+            path: communication-service
+          - name: aluno-service
+            path: distrischool-aluno-main
+          - name: user-service
+            path: distrischool-user-service-main/user-service
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        if: |
+          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
+          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
+          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
+          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
+          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
+          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      
+      - name: Log in to GitHub Container Registry
+        if: |
+          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
+          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
+          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
+          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
+          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
+          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for Docker
+        if: |
+          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
+          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
+          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
+          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
+          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
+          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.service.name }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=sha-${{ github.sha }}
+      
+      - name: Build and push Docker image
+        if: |
+          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
+          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
+          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
+          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
+          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
+          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.path }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # Job para build e push da imagem Docker do frontend
+  build-push-frontend:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/frontend
+          tags: |
+            type=raw,value=latest
+            type=raw,value=sha-${{ github.sha }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
