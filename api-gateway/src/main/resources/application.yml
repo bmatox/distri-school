@@ -1,0 +1,107 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        # Authentication route (public)
+        - id: auth-service
+          uri: http://user-service:8080
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=2
+
+        - id: user-service
+          uri: http://user-service:8080
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+
+        - id: professor-service
+          uri: http://professor-tecadm-service:8082
+          predicates:
+            - Path=/api/v1/professores/**
+
+        - id: turmas-service
+          uri: http://professor-tecadm-service:8082
+          predicates:
+            - Path=/api/turmas/**
+          filters:
+            - StripPrefix=1
+
+        - id: cursos-service
+          uri: http://professor-tecadm-service:8082
+          predicates:
+            - Path=/api/cursos/**
+          filters:
+            - StripPrefix=1
+
+        - id: disciplinas-service
+          uri: http://professor-tecadm-service:8082
+          predicates:
+            - Path=/api/disciplinas/**
+          filters:
+            - StripPrefix=1
+
+        - id: matriculas-service
+          uri: http://professor-tecadm-service:8082
+          predicates:
+            - Path=/api/matriculas/**
+          filters:
+            - StripPrefix=1
+
+        - id: aluno-service
+          uri: http://aluno-service:8081
+          predicates:
+            - Path=/api/alunos/**
+          filters:
+            - StripPrefix=1
+
+        - id: grades-service
+          uri: http://grades-service:8083
+          predicates:
+            - Path=/api/grades/**
+          filters:
+            - StripPrefix=1
+
+        - id: communication-service
+          uri: http://communication-service:8084
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# JWT Configuration (must match user-service)
+# IMPORTANT: Change JWT_SECRET in production to a secure random value
+jwt:
+  secret: ${JWT_SECRET:CHANGE_THIS_SECRET_IN_PRODUCTION}
+
+app:
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    allowed-headers: "*"
+    allow-credentials: false
+  rate-limiting:
+    enabled: true
+    # Rate limiting configuration (requests per second)
+    replenish-rate: ${RATE_LIMIT_REPLENISH_RATE:20}
+    # Maximum burst capacity
+    burst-capacity: ${RATE_LIMIT_BURST_CAPACITY:40}
