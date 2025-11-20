@@ -1,0 +1,1 @@
+CREATE SEQUENCE IF NOT EXISTS aluno_schema.matricula_seq START 1;
