@@ -1,0 +1,77 @@
+name: distrischool-platform
+
+networks:
+  distrinet:
+
+volumes:
+  users_db_data:
+
+services:
+  db:
+    image: postgres:16
+    container_name: users-db
+    environment:
+      POSTGRES_DB: distrischool_users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d distrischool_users"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [distrinet]
+
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [distrinet]
+
+  user-service:
+    build:
+      context: ./user-service           # <<<<<<<<<< CORRIGIDO AQUI
+      dockerfile: Dockerfile
+    image: distrischool-platform-user-service
+    container_name: user-service
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/distrischool_users
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: "5672"
+      RABBIT_USERNAME: guest
+      RABBIT_PASSWORD: guest
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks: [distrinet]
+
+  api-gateway:
+    build:
+      context: ./api-gateway            # <<<<<<<<<< CORRIGIDO AQUI
+      dockerfile: Dockerfile
+    image: distrischool-platform-api-gateway
+    container_name: api-gateway
+    depends_on:
+      user-service:
+        condition: service_started
+    # environment: {}  # (opcional; se não precisar, remova essa linha)
+    ports:
+      - "8088:8080"   # gateway exposto em 8088
+    networks: [distrinet]
