@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    # INIT parameter creates aluno_schema for native query: SELECT nextval('aluno_schema.matricula_seq')
+    url: jdbc:h2:mem:alunotestdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS aluno_schema
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      # Clear schema to allow H2 to use default PUBLIC schema for JPA operations
+      hibernate.default_schema:
+  flyway:
+    enabled: false
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
+
+logging:
+  level:
+    org.springframework: WARN
+    org.hibernate: WARN
