@@ -1,0 +1,328 @@
+package br.com.distrischool.user_service.controller;
+
+import br.com.distrischool.user_service.domain.Role;
+import br.com.distrischool.user_service.dto.*;
+import br.com.distrischool.user_service.exception.EmailAlreadyUsedException;
+import br.com.distrischool.user_service.exception.ResourceNotFoundException;
+import br.com.distrischool.user_service.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(UserController.class)
+@DisplayName("UserController Integration Tests")
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserService userService;
+
+    private UserResponse userResponseMock;
+    private CreateUserRequest createUserRequest;
+
+    @BeforeEach
+    void setUp() {
+        userResponseMock = new UserResponse(
+                1L,
+                "João Silva",
+                "joao@test.com",
+                Role.STUDENT,
+                null,
+                "STUDENT",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        AlunoProfileData alunoProfile = new AlunoProfileData(
+                null,
+                1L,
+                1L,
+                "(11) 98765-4321",
+                LocalDate.of(2000, 5, 15),
+                new EnderecoData("Rua Teste", "123", "São Paulo", "SP", "12345-678")
+        );
+
+        createUserRequest = new CreateUserRequest(
+                "João Silva",
+                "joao@test.com",
+                "password123",
+                Role.STUDENT,
+                null,
+                null,
+                null,
+                alunoProfile,
+                null
+        );
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("POST /users should create user and return 201")
+    void testCreateUser() throws Exception {
+        // Given
+        when(userService.create(any(CreateUserRequest.class))).thenReturn(userResponseMock);
+
+        // When & Then
+        mockMvc.perform(post("/users")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createUserRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/users/1"))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("João Silva"))
+                .andExpect(jsonPath("$.email").value("joao@test.com"));
+
+        verify(userService).create(any(CreateUserRequest.class));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("POST /users should return 400 for invalid data (missing name)")
+    void testCreateUserInvalidName() throws Exception {
+        // Given
+        createUserRequest = new CreateUserRequest(
+                "",
+                "joao@test.com",
+                "password123",
+                Role.STUDENT,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // When & Then
+        mockMvc.perform(post("/users")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createUserRequest)))
+                .andExpect(status().isBadRequest());
+
+        verify(userService, never()).create(any(CreateUserRequest.class));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("POST /users should return 409 when email already exists")
+    void testCreateUserDuplicateEmail() throws Exception {
+        // Given
+        when(userService.create(any(CreateUserRequest.class)))
+                .thenThrow(new EmailAlreadyUsedException("Email já está em uso: joao@test.com"));
+
+        // When & Then
+        mockMvc.perform(post("/users")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createUserRequest)))
+                .andExpect(status().isConflict());
+
+        verify(userService).create(any(CreateUserRequest.class));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("GET /users/{id} should return user when found")
+    void testGetUserById() throws Exception {
+        // Given
+        when(userService.getById(1L)).thenReturn(userResponseMock);
+
+        // When & Then
+        mockMvc.perform(get("/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("João Silva"))
+                .andExpect(jsonPath("$.email").value("joao@test.com"));
+
+        verify(userService).getById(1L);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("GET /users/{id} should return 404 when user not found")
+    void testGetUserByIdNotFound() throws Exception {
+        // Given
+        when(userService.getById(999L))
+                .thenThrow(new ResourceNotFoundException("Usuário não encontrado: id=999"));
+
+        // When & Then
+        mockMvc.perform(get("/users/999"))
+                .andExpect(status().isNotFound());
+
+        verify(userService).getById(999L);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("GET /users should return paginated list of users")
+    void testListUsers() throws Exception {
+        // Given
+        List<UserResponse> users = Arrays.asList(userResponseMock);
+        Page<UserResponse> userPage = new PageImpl<>(users, PageRequest.of(0, 10), 1);
+        when(userService.list(any())).thenReturn(userPage);
+
+        // When & Then
+        mockMvc.perform(get("/users?page=0&size=10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("João Silva"))
+                .andExpect(jsonPath("$.totalElements").value(1));
+
+        verify(userService).list(any());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("GET /users/by-role/{role} should return users by role")
+    void testListUsersByRole() throws Exception {
+        // Given
+        List<UserResponse> users = Arrays.asList(userResponseMock);
+        when(userService.listByRole(Role.STUDENT)).thenReturn(users);
+
+        // When & Then
+        mockMvc.perform(get("/users/by-role/STUDENT"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("João Silva"));
+
+        verify(userService).listByRole(Role.STUDENT);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("GET /users/available-for-role/{role} should return available users")
+    void testListAvailableUsersByRole() throws Exception {
+        // Given
+        List<UserResponse> users = Arrays.asList(userResponseMock);
+        when(userService.listAvailableByRole(Role.TEACHER)).thenReturn(users);
+
+        // When & Then
+        mockMvc.perform(get("/users/available-for-role/TEACHER"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("João Silva"));
+
+        verify(userService).listAvailableByRole(Role.TEACHER);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("PUT /users/{id} should update user and return 200")
+    void testUpdateUser() throws Exception {
+        // Given
+        UpdateUserRequest updateRequest = new UpdateUserRequest(
+                "João Silva Updated",
+                "joao.updated@test.com",
+                null,
+                Role.STUDENT,
+                null,
+                null
+        );
+
+        UserResponse updatedResponse = new UserResponse(
+                1L,
+                "João Silva Updated",
+                "joao.updated@test.com",
+                Role.STUDENT,
+                null,
+                "STUDENT",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        when(userService.update(eq(1L), any(UpdateUserRequest.class))).thenReturn(updatedResponse);
+
+        // When & Then
+        mockMvc.perform(put("/users/1")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("João Silva Updated"))
+                .andExpect(jsonPath("$.email").value("joao.updated@test.com"));
+
+        verify(userService).update(eq(1L), any(UpdateUserRequest.class));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("PUT /users/{id} should return 404 when user not found")
+    void testUpdateUserNotFound() throws Exception {
+        // Given
+        UpdateUserRequest updateRequest = new UpdateUserRequest(
+                "João Silva",
+                "joao@test.com",
+                null,
+                Role.STUDENT,
+                null,
+                null
+        );
+
+        when(userService.update(eq(999L), any(UpdateUserRequest.class)))
+                .thenThrow(new ResourceNotFoundException("Usuário não encontrado: id=999"));
+
+        // When & Then
+        mockMvc.perform(put("/users/999")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isNotFound());
+
+        verify(userService).update(eq(999L), any(UpdateUserRequest.class));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("DELETE /users/{id} should delete user and return 204")
+    void testDeleteUser() throws Exception {
+        // Given
+        doNothing().when(userService).delete(1L);
+
+        // When & Then
+        mockMvc.perform(delete("/users/1")
+                .with(csrf()))
+                .andExpect(status().isNoContent());
+
+        verify(userService).delete(1L);
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("DELETE /users/{id} should return 404 when user not found")
+    void testDeleteUserNotFound() throws Exception {
+        // Given
+        doThrow(new ResourceNotFoundException("Usuário não encontrado: id=999"))
+                .when(userService).delete(999L);
+
+        // When & Then
+        mockMvc.perform(delete("/users/999")
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        verify(userService).delete(999L);
+    }
+}
