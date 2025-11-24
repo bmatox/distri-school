@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 10s
+      evaluation_interval: 10s
+    
+    scrape_configs:
+      # Prometheus self-monitoring
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      
+      # Aluno Service
+      - job_name: 'aluno-service'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['aluno-service:8081']
+            labels:
+              service: 'aluno-service'
+      
+      # User Service
+      - job_name: 'user-service'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['user-service:8080']
+            labels:
+              service: 'user-service'
+      
+      # Professor Service
+      - job_name: 'professor-service'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['professor-tecadm-service:8082']
+            labels:
+              service: 'professor-service'
+      
+      # Grades Service
+      - job_name: 'grades-service'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['grades-service:8083']
+            labels:
+              service: 'grades-service'
+      
+      # Communication Service
+      - job_name: 'communication-service'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['communication-service:8084']
+            labels:
+              service: 'communication-service'
+      
+      # API Gateway
+      - job_name: 'api-gateway'
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['api-gateway-service:8080']
+            labels:
+              service: 'api-gateway'
