@@ -1,0 +1,203 @@
+/* Modern Header with New Blue Color Palette */
+
+.app-header {
+  background: linear-gradient(135deg, #0000FF 0%, #0000A0 100%);
+  color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-icon {
+  font-size: 2.5rem;
+  animation: bounce 2s infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand-text p {
+  margin: 0;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 400;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 0.5rem;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  color: white;
+}
+
+.user-role {
+  font-size: clamp(0.75rem, 1.5vw, 0.8rem);
+  color: #DEDEFF;
+  font-weight: 500;
+}
+
+.header-btn {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.header-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.logout-btn:hover {
+  background: rgba(255, 100, 100, 0.3);
+  border-color: rgba(255, 100, 100, 0.5);
+}
+
+.notification-btn {
+  position: relative;
+  padding: 0.625rem;
+  min-width: auto;
+}
+
+.notification-icon {
+  font-size: 1.25rem;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0000FF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.notification-btn:hover .notification-badge {
+  transform: scale(1.1);
+}
+
+/* Responsividade para Tablets */
+@media (max-width: 1024px) {
+  .header-container {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* Responsividade para Mobile */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .brand-icon {
+    font-size: 2rem;
+  }
+
+  .header-actions {
+    gap: 0.75rem;
+  }
+
+  .user-info {
+    display: none; /* Hide user info on mobile to save space */
+  }
+
+  .header-btn {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Responsividade para Mobile Pequeno */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0.75rem;
+  }
+  
+  .brand-icon {
+    font-size: 1.75rem;
+  }
+  
+  .header-btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Reduzir animações para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .brand-icon,
+  .header-btn {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .header-btn:hover {
+    transform: none;
+  }
+}
