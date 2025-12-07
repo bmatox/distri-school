@@ -1,6 +1,6 @@
 # 🎓 DistriSchool - Plataforma de Gestão Escolar Distribuída
 
-O **DistriSchool** é uma plataforma completa de gestão escolar baseada em **arquitetura de microserviços**, desenvolvida com Spring Boot, containerizada com Docker e orquestrada com Kubernetes. Este projeto demonstra as melhores práticas de desenvolvimento de sistemas distribuídos, incluindo comunicação síncrona e assíncrona, isolamento de serviços, escalabilidade horizontal e resiliência a falhas.
+O **DistriSchool** é uma plataforma completa de gestão escolar baseada em **arquitetura de microserviços**, desenvolvida com Spring Boot, containerizada com Docker e orquestrada com Kubernetes. É um projeto pessoal, mas que demonstra as melhores práticas de desenvolvimento de sistemas distribuídos, incluindo comunicação síncrona e assíncrona, isolamento de serviços, escalabilidade horizontal e resiliência a falhas.
 
 ## 🏗️ Arquitetura
 
@@ -81,12 +81,6 @@ O DistriSchool implementa um sistema completo de autenticação JWT e controle d
 4. Todas requisições incluem token no header `Authorization: Bearer <token>`
 5. API Gateway valida token antes de rotear para microserviços
 6. Frontend adapta interface baseado na role do usuário
-
-**📖 Para detalhes completos, consulte:**
-- [Revisão de Segurança e Boas Práticas](./docs/SECURITY_AND_BEST_PRACTICES_REVIEW.md) - Análise completa de segurança e arquitetura
-- [Guia de Sincronização de Microsserviços](./docs/MICROSERVICES_SYNC_GUIDE.md) - Fluxos, implementação e testes
-- [Implementação de Autenticação JWT](./docs/JWT_AUTHENTICATION_IMPLEMENTATION.md) - Documentação completa do sistema de autenticação
-- [Guia de Configuração do DBeaver](./docs/DBEAVER_SETUP_GUIDE.md) - Para monitorar o banco de dados
 
 ### 📝 Sistema de Notas e Avaliações
 
@@ -374,7 +368,6 @@ distrischool/
 
 **Nota**: As notificações são criadas automaticamente quando eventos ocorrem no sistema (ex: lançamento de notas).
 
-**📖 Para exemplos de requisições e respostas, consulte [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md)**
 ## 🧪 Testes
 
 ### Testando Arquitetura de Microserviços
@@ -537,8 +530,6 @@ Observe em tempo real:
 - ✅ Error rate < 10%
 - ✅ 95% de checks bem-sucedidos
 
-Para mais detalhes, consulte: [LOAD_TESTING_GUIDE.md](docs/LOAD_TESTING_GUIDE.md)
-
 ## 📨 Mensageria (RabbitMQ)
 
 O sistema usa eventos assíncronos para comunicação entre serviços:
@@ -668,31 +659,3 @@ minikube delete
 # Remover imagens (opcional)
 docker system prune -a
 ```
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT.
-
-## 👥 Autores
-
-- DistriSchool Team
-
-## 🙏 Agradecimentos
-
-- Spring Boot Team
-- RabbitMQ Team
-- Kubernetes Community
-- React Team
-- Todos os contribuidores open-source
-
----
-
-**⭐ Se este projeto foi útil, considere dar uma estrela no GitHub!**
