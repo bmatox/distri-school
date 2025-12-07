@@ -27,8 +27,6 @@ public class Aluno {
     @JsonFormat(pattern = "dd-MM-yyyy", shape = JsonFormat.Shape.STRING)
     private LocalDate dataNascimento;
 
-    private String foto;
-
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "rua", column = @Column(name = "endereco_rua")),
