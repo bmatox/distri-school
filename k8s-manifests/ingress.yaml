@@ -10,8 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: distrischool.local
-      http:
+    - http:
         paths:
           # API Gateway routes - IMPORTANT: preserve /api prefix
           # The API Gateway (Spring Cloud Gateway) routes are configured to expect /api in the path

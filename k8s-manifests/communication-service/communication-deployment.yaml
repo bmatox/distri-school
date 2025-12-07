@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: communication-service
-        image: distrischool-communication-service:latest
-        imagePullPolicy: Never
+        image: bmatox/distrischool-communication-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8084
         env:

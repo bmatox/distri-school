@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: aluno-service
-          image: distrischool-aluno-service:latest
-          imagePullPolicy: IfNotPresent
+          image: bmatox/distrischool-aluno-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           env:

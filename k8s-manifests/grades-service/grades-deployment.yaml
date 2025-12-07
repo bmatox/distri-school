@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: grades-service
-        image: distrischool-grades-service:latest
-        imagePullPolicy: Never
+        image: bmatox/distrischool-grades-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8083
         env:

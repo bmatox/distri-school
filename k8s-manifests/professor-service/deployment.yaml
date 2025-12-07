@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: professor-tecadm-service
-          image: distrischool-professor-tecadm-service:latest
-          imagePullPolicy: IfNotPresent
+          image: bmatox/distrischool-professor-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8082 # Mantém a porta específica se necessário
           env:

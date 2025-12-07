@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: distrischool-frontend:latest
-          imagePullPolicy: IfNotPresent
+          image: bmatox/distrischool-frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80

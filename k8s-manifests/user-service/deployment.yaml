@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: distrischool-user-service:latest
-          imagePullPolicy: IfNotPresent
+          image: bmatox/distrischool-user-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
