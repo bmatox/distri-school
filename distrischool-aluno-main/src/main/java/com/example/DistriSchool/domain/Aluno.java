@@ -39,8 +39,6 @@ public class Aluno {
     })
     private Endereco endereco;
 
-    private boolean ativo = true;
-
     @NotBlank(message = "O nome é obrigatório.")
     private String nome;
 
