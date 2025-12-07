@@ -78,3 +78,5 @@ HELP.md
 # Build Tools e Binários
 # ===================================================================
 actionlint
+
+k8s-manifests/auth-secret.yaml
