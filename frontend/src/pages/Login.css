@@ -1,320 +1,182 @@
+/* =========================================
+   ESTILOS GERAIS (Desktop First / Ultrawide)
+========================================= */
+
+/* 1. Container ocupa a tela toda, sem margens e com fundo branco base */
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #0000FF 0%, #5555FF 50%, #8585FF 100%);
-  animation: gradientShift 10s ease infinite;
-  background-size: 200% 200%;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
   padding: 0;
+  overflow: hidden;
+  background: white;
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
+/* 2. Wrapper transparente ocupando tudo */
 .login-wrapper {
   display: flex;
   width: 100%;
-  max-width: 1400px;
-  height: 100vh;
+  height: 100%;
   background: white;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  animation: wrapperSlideIn 0.8s ease-out;
 }
 
-@keyframes wrapperSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
+/* 3. Seção da Imagem (Esquerda) */
 .login-image-section {
-  flex: 1;
-  background: linear-gradient(135deg, rgba(0, 0, 255, 0.1) 0%, rgba(85, 85, 255, 0.1) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  /* Tenta ocupar 50%, mas trava em 800px para não ficar gigante em ultrawide */
+  flex: 0 0 50%;
+  max-width: 800px;
   position: relative;
+  background-color: #0000FF; /* Fallback de cor */
 }
 
 .login-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  animation: imageZoomIn 1s ease-out;
+  object-fit: cover; /* Cobre a área sem distorcer */
+  object-position: center;
+  display: block;
 }
 
-@keyframes imageZoomIn {
-  from {
-    transform: scale(1.1);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
+/* 4. Seção do Formulário (Direita) - Ocupa o resto do espaço */
 .login-form-section {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
   background: white;
+  padding: 40px;
+  position: relative;
 }
 
+/* 5. O Cartão interno dos inputs */
 .login-card {
-  background: white;
-  padding: 40px;
-  border-radius: 20px;
-  max-width: 480px;
   width: 100%;
+  max-width: 420px; /* Trava a largura dos inputs para não esticar */
+  background: transparent;
   animation: cardSlideIn 0.6s ease-out;
 }
 
-@keyframes cardSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
+/* === TIPOGRAFIA E COMPONENTES === */
 .login-card h1 {
-  text-align: center;
+  text-align: left;
   background: linear-gradient(135deg, #0000FF 0%, #5555FF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 10px;
-  font-size: clamp(1.75rem, 4vw, 2rem);
-  font-weight: 900;
+  font-size: 2.2rem;
+  font-weight: 800;
 }
 
 .login-card h2 {
-  text-align: center;
-  color: #00004E;
-  margin-bottom: 30px;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  font-weight: 600;
+  text-align: left;
+  color: #5d6b82;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
-.form-group {
-  margin-bottom: 20px;
-}
+.form-group { margin-bottom: 24px; }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #00004E;
+  color: #1a1f36;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 14px;
-  border: 2px solid #DEDEFF;
-  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid #e1e1e8;
+  border-radius: 8px;
   font-size: 1rem;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  background-color: #DEDEFF;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  box-sizing: border-box; /* Importante */
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #5555FF;
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(85, 85, 255, 0.1);
-}
-
-.form-group input:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  border: 2px solid #ef5350;
-  font-weight: 500;
-  animation: shake 0.5s ease;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+  border-color: #0000FF;
+  box-shadow: 0 0 0 4px rgba(0, 0, 255, 0.1);
 }
 
 .login-button {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #0000FF 0%, #5555FF 100%);
+  padding: 16px;
+  background: #0000FF;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 1.05rem;
-  font-weight: 700;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 255, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: background 0.3s ease;
+  margin-top: 10px;
 }
 
 .login-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 255, 0.4);
-  background: linear-gradient(135deg, #5555FF 0%, #8585FF 100%);
-}
-
-.login-button:active:not(:disabled) {
-  transform: translateY(0);
+  background: #0000cc;
+  transform: translateY(-1px);
 }
 
 .login-button:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
-  transform: none;
+}
+
+.error-message {
+  background-color: #fff2f0;
+  color: #ff4d4f;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #ffccc7;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .default-credentials {
-  margin-top: 30px;
-  padding: 15px;
-  background: linear-gradient(135deg, #DEDEFF 0%, #B2B2FF 100%);
-  border-radius: 10px;
-  border: 2px solid #B2B2FF;
+  margin-top: 40px;
+  padding: 20px;
+  background: #f7f9fc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #697386;
 }
 
-.default-credentials p {
-  margin: 5px 0;
-  font-size: 0.9rem;
-  color: #00004E;
+@keyframes cardSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.default-credentials p:first-child {
-  font-weight: 700;
-  color: #0000A0;
-  font-size: 1rem;
-}
-
-.admin-login-link {
-  text-align: center;
-  margin-top: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  border: 2px solid #DEDEFF;
-}
-
-.admin-login-link p {
-  margin: 0 0 10px 0;
-  color: #00004E;
-  font-weight: 600;
-}
-
-.admin-login-link a {
-  color: #0000FF;
-  text-decoration: none;
-  font-weight: 700;
-  transition: all 0.2s ease;
-  display: inline-block;
-}
-
-.admin-login-link a:hover {
-  color: #5555FF;
-  transform: translateX(5px);
-}
-
-/* Responsividade */
-@media (max-width: 1024px) {
-  .login-wrapper {
-    max-width: 100%;
-  }
-
-  .login-form-section {
-    padding: 30px;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-wrapper {
-    flex-direction: column;
-    height: auto;
-    min-height: 100vh;
-  }
-
+/* =========================================
+   RESPONSIVIDADE (Mobile e Tablets Pequenos)
+========================================= */
+@media (max-width: 900px) {
+  /* O PULO DO GATO: Esconde a seção da imagem completamente */
   .login-image-section {
     display: none;
   }
 
+  /* A seção do formulário agora ocupa tudo */
   .login-form-section {
-    flex: 1;
-    padding: 20px;
+    padding: 20px; /* Reduz um pouco o padding lateral */
+    /*
+      Nota: Ela já herda 'align-items: center' e 'justify-content: center'
+      do estilo desktop, então o formulário ficará perfeitamente
+      centralizado na tela do celular.
+    */
+  }
+
+  /* Ajustes visuais para mobile */
+  .login-card h1, .login-card h2 {
+    text-align: center; /* Centraliza os títulos quando está só o form */
   }
 
   .login-card {
-    padding: 30px 20px;
-  }
-
-  .login-card h1 {
-    font-size: 1.75rem;
-  }
-
-  .login-card h2 {
-    font-size: 1.25rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-card {
-    padding: 25px 15px;
-  }
-
-  .form-group input,
-  .login-button {
-    padding: 12px;
-    font-size: 0.95rem;
-  }
-
-  .default-credentials,
-  .admin-login-link {
-    padding: 12px;
-  }
-}
-
-/* Reduzir animações para acessibilidade */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    max-width: 100%; /* Garante uso total da largura disponível no mobile */
   }
 }
