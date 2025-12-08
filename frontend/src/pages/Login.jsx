@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import loginImage from '../images/image1.png';
 import './Login.css';
 
+// Componente de Login
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
