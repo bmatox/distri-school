@@ -9,10 +9,9 @@ on:
       - main
 
 jobs:
-  # Job para detectar quais serviços foram modificados
+  # Job 1: Detectar mudanças (Roda na Nuvem)
   detect-changes:
     runs-on: ubuntu-latest
-    # Só executa se o CI passou com sucesso
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
@@ -48,11 +47,10 @@ jobs:
             user-service:
               - 'distrischool-user-service-main/user-service/**'
 
-  # Job para build e push de imagens Docker dos serviços backend
+  # Job 2: Build Backend (Roda na Nuvem)
   build-push-backend:
     runs-on: ubuntu-latest
     needs: detect-changes
-    # NOVO: Só executa se pelo menos um serviço backend mudou
     if: |
       needs.detect-changes.outputs.professor-service == 'true' ||
       needs.detect-changes.outputs.api-gateway == 'true' ||
@@ -66,75 +64,45 @@ jobs:
           - name: professor-service
             path: professor-service
             docker_image: distrischool-professor-service
-            deployment: professor-tecadm-deployment
-            container: professor-tecadm-service
           - name: api-gateway
             path: api-gateway
             docker_image: distrischool-api-gateway
-            deployment: api-gateway-deployment
-            container: api-gateway
           - name: grades-service
             path: grades-service
             docker_image: distrischool-grades-service
-            deployment: grades-deployment
-            container: grades-service
           - name: communication-service
             path: communication-service
             docker_image: distrischool-communication-service
-            deployment: communication-deployment
-            container: communication-service
           - name: aluno-service
             path: distrischool-aluno-main
             docker_image: distrischool-aluno-service
-            deployment: aluno-deployment
-            container: aluno-service
           - name: user-service
             path: distrischool-user-service-main/user-service
             docker_image: distrischool-user-service
-            deployment: user-deployment
-            container: user-service
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-        if: |
-          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
-          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
-          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
-          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
-          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
-          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Log in to Docker Hub
-        if: |
-          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
-          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
-          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
-          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
-          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
-          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push Docker image
-        if: |
-          (matrix.service.name == 'professor-service' && needs.detect-changes.outputs.professor-service == 'true') ||
-          (matrix.service.name == 'api-gateway' && needs.detect-changes.outputs.api-gateway == 'true') ||
-          (matrix.service.name == 'grades-service' && needs.detect-changes.outputs.grades-service == 'true') ||
-          (matrix.service.name == 'communication-service' && needs.detect-changes.outputs.communication-service == 'true') ||
-          (matrix.service.name == 'aluno-service' && needs.detect-changes.outputs.aluno-service == 'true') ||
-          (matrix.service.name == 'user-service' && needs.detect-changes.outputs.user-service == 'true')
+        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.service.path }}
           push: true
           tags: bmatox/${{ matrix.service.docker_image }}:latest
 
-  # Job para build e push da imagem Docker do frontend
+  # Job 3: Build Frontend (Roda na Nuvem)
   build-push-frontend:
     runs-on: ubuntu-latest
     needs: detect-changes
@@ -158,3 +126,50 @@ jobs:
           context: frontend
           push: true
           tags: bmatox/distrischool-frontend:latest
+
+  # Job 4: DEPLOY LOCAL (Roda DENTRO do seu servidor)
+  deploy-local:
+    runs-on: self-hosted
+    needs: [detect-changes, build-push-backend, build-push-frontend]
+    # Executa se tudo deu certo
+    if: |
+      always() && 
+      needs.detect-changes.result == 'success' &&
+      (needs.build-push-backend.result == 'success' || needs.build-push-frontend.result == 'success')
+    steps:
+      - name: Restart Services via Kubectl Local
+        env:
+          # Pegamos as variáveis de quais serviços mudaram
+          UPDATE_PROFESSOR: ${{ needs.detect-changes.outputs.professor-service }}
+          UPDATE_GATEWAY: ${{ needs.detect-changes.outputs.api-gateway }}
+          UPDATE_GRADES: ${{ needs.detect-changes.outputs.grades-service }}
+          UPDATE_COMMUNICATION: ${{ needs.detect-changes.outputs.communication-service }}
+          UPDATE_ALUNO: ${{ needs.detect-changes.outputs.aluno-service }}
+          UPDATE_USER: ${{ needs.detect-changes.outputs.user-service }}
+          UPDATE_FRONTEND: ${{ needs.detect-changes.outputs.frontend }}
+        run: |
+          # Função para reiniciar o deployment correto
+          restart_svc() {
+            SERVICE_NAME=$1
+            SHOULD_UPDATE=$2
+            DEPLOYMENT=$3
+          
+            if [ "$SHOULD_UPDATE" == "true" ]; then
+              echo "🚀 Atualizando $SERVICE_NAME..."
+              # Roda direto no terminal do servidor, sem SSH
+              kubectl rollout restart deployment/$DEPLOYMENT
+              kubectl rollout status deployment/$DEPLOYMENT --timeout=2m
+            else
+              echo "⏭️ $SERVICE_NAME sem alterações."
+            fi
+          }
+
+          echo "--- Iniciando Deploy Local (Self-Hosted) ---"
+
+          restart_svc "Professor Service" "$UPDATE_PROFESSOR" "professor-tecadm-deployment"
+          restart_svc "API Gateway" "$UPDATE_GATEWAY" "api-gateway-deployment"
+          restart_svc "Grades Service" "$UPDATE_GRADES" "grades-deployment"
+          restart_svc "Communication Service" "$UPDATE_COMMUNICATION" "communication-deployment"
+          restart_svc "Aluno Service" "$UPDATE_ALUNO" "aluno-deployment"
+          restart_svc "User Service" "$UPDATE_USER" "user-deployment"
+          restart_svc "Frontend" "$UPDATE_FRONTEND" "frontend-deployment"
