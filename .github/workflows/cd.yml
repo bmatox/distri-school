@@ -158,3 +158,56 @@ jobs:
           context: frontend
           push: true
           tags: bmatox/distrischool-frontend:latest
+
+    deploy-to-k3s:
+      runs-on: ubuntu-latest
+      needs: [ detect-changes, build-push-backend, build-push-frontend ]
+      # Executa sempre que detectar mudanças foi sucesso e pelo menos um build passou
+      if: |
+        always() && 
+        needs.detect-changes.result == 'success' &&
+        (needs.build-push-backend.result == 'success' || needs.build-push-frontend.result == 'success')
+      steps:
+        - name: Setup SSH Key and Deploy
+          env:
+            UPDATE_PROFESSOR: ${{ needs.detect-changes.outputs.professor-service }}
+            UPDATE_GATEWAY: ${{ needs.detect-changes.outputs.api-gateway }}
+            UPDATE_GRADES: ${{ needs.detect-changes.outputs.grades-service }}
+            UPDATE_COMMUNICATION: ${{ needs.detect-changes.outputs.communication-service }}
+            UPDATE_ALUNO: ${{ needs.detect-changes.outputs.aluno-service }}
+            UPDATE_USER: ${{ needs.detect-changes.outputs.user-service }}
+            UPDATE_FRONTEND: ${{ needs.detect-changes.outputs.frontend }}
+          run: |
+           
+            mkdir -p ~/.ssh/
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            
+            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 
+    
+            cat <<EOF > deploy_script.sh
+  
+            restart_svc() {
+              
+              if [ "\$2" == "true" ]; then
+                echo "🚀 Atualizando \$1..."
+                kubectl rollout restart deployment/\$3
+                kubectl rollout status deployment/\$3 --timeout=2m
+              else
+                echo "⏭️ \$1 sem alterações."
+              fi
+            }
+            
+            echo "--- Iniciando Deploy no Servidor ---"
+            
+            restart_svc "Professor Service" "$UPDATE_PROFESSOR" "professor-tecadm-deployment"
+            restart_svc "API Gateway" "$UPDATE_GATEWAY" "api-gateway-deployment"
+            restart_svc "Grades Service" "$UPDATE_GRADES" "grades-deployment"
+            restart_svc "Communication Service" "$UPDATE_COMMUNICATION" "communication-deployment"
+            restart_svc "Aluno Service" "$UPDATE_ALUNO" "aluno-deployment"
+            restart_svc "User Service" "$UPDATE_USER" "user-deployment"
+            restart_svc "Frontend" "$UPDATE_FRONTEND" "frontend-deployment"
+            EOF
+            
+            echo "Conectando em ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}..."
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "bash -s" < deploy_script.sh
