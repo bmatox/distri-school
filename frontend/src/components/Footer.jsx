@@ -31,7 +31,6 @@ function Footer() {
         </div>
         <div className="footer-bottom">
           <p>&copy; {currentYear} DistriSchool. Todos os direitos reservados.</p>
-          <p className="footer-tech">Desenvolvido com ❤️ usando React e Spring Boot</p>
         </div>
       </div>
     </footer>
