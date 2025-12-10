@@ -38,21 +38,6 @@ function Dashboard() {
           </div>
         </Link>
       </div>
-
-      <div className="dashboard-info">
-        <div className="info-card">
-          <h3>📡 Arquitetura de Microserviços</h3>
-          <p>Sistema baseado em microsserviços com API Gateway, mensageria via RabbitMQ e persistência isolada para máxima eficiência.</p>
-        </div>
-        <div className="info-card">
-          <h3>🚀 Kubernetes</h3>
-          <p>Infraestrutura resiliente rodando em cluster de produção, garantindo escalabilidade automática e alta disponibilidade.</p>
-        </div>
-        <div className="info-card">
-          <h3>⚡ React + Vite</h3>
-          <p>Interface moderna e responsiva (SPA) com carregamento instantâneo e otimização de performance para o usuário.</p>
-        </div>
-      </div>
     </div>
   );
 }
