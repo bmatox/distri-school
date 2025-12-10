@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:userstest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+      hibernate.jdbc.time_zone: UTC
+    defer-datasource-initialization: true
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+jwt:
+  secret: test-secret
+  expiration: 3600000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
