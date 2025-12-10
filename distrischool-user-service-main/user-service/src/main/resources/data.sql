@@ -1,4 +1,3 @@
--- Insert default ADMIN user for initial system access (rotate in production)
 INSERT INTO users (name, email, password_hash, role, created_at, updated_at)
 VALUES (
     'System Administrator',
