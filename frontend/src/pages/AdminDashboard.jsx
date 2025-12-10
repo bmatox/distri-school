@@ -61,21 +61,6 @@ function AdminDashboard() {
           </div>
         </Link>
       </div>
-
-      <div className="dashboard-info">
-        <div className="info-card">
-          <h3>📡 Arquitetura de Microserviços</h3>
-          <p>Sistema distribuído com API Gateway, RabbitMQ e PostgreSQL para comunicação assíncrona e escalável</p>
-        </div>
-        <div className="info-card">
-          <h3>🚀 Kubernetes</h3>
-          <p>Deploy orquestrado com Kubernetes no Minikube para alta disponibilidade</p>
-        </div>
-        <div className="info-card">
-          <h3>⚡ React + Vite</h3>
-          <p>Frontend moderno e performático com hot-reload e build otimizado</p>
-        </div>
-      </div>
     </div>
   );
 }
