@@ -48,7 +48,6 @@ const Login = () => {
 
           <div className="login-form-section">
             <div className="login-card">
-              <h1>DistriSchool</h1>
               <h2>Entrar no Sistema</h2>
 
               {error && <div className="error-message">{error}</div>}
