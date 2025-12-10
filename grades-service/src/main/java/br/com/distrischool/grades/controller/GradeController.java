@@ -39,7 +39,6 @@ public class GradeController {
         return ResponseEntity.ok(gradeService.getGradesByStudentId(studentId));
     }
 
-    // novo endpoint para buscar notas por professor
     @GetMapping("/professor/{professorId}")
     public ResponseEntity<List<Grade>> getGradesByProfessor(@PathVariable Long professorId) {
         return ResponseEntity.ok(gradeService.getGradesByProfessorId(professorId));
