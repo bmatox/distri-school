@@ -27,10 +27,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 2  # Precisa do commit anterior para comparar e fazer o diff
 
       - uses: dorny/paths-filter@v3
         id: filter
         with:
+          base: HEAD^
           filters: |
             frontend:
               - 'frontend/**'
