@@ -47,62 +47,157 @@ jobs:
             user-service:
               - 'distrischool-user-service-main/user-service/**'
 
-  # Job 2: Build Backend (Roda na Nuvem)
-  build-push-backend:
+  # Job 2: Build Professor Service
+  build-push-professor:
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: |
-      needs.detect-changes.outputs.professor-service == 'true' ||
-      needs.detect-changes.outputs.api-gateway == 'true' ||
-      needs.detect-changes.outputs.grades-service == 'true' ||
-      needs.detect-changes.outputs.communication-service == 'true' ||
-      needs.detect-changes.outputs.aluno-service == 'true' ||
-      needs.detect-changes.outputs.user-service == 'true'
-    strategy:
-      matrix:
-        service:
-          - name: professor-service
-            path: professor-service
-            docker_image: distrischool-professor-service
-          - name: api-gateway
-            path: api-gateway
-            docker_image: distrischool-api-gateway
-          - name: grades-service
-            path: grades-service
-            docker_image: distrischool-grades-service
-          - name: communication-service
-            path: communication-service
-            docker_image: distrischool-communication-service
-          - name: aluno-service
-            path: distrischool-aluno-main
-            docker_image: distrischool-aluno-service
-          - name: user-service
-            path: distrischool-user-service-main/user-service
-            docker_image: distrischool-user-service
+    if: needs.detect-changes.outputs.professor-service == 'true'
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
-        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Log in to Docker Hub
-        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push Docker image
-        if: needs.detect-changes.outputs.${{ matrix.service.name }} == 'true'
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.service.path }}
+          context: professor-service
           push: true
-          tags: bmatox/${{ matrix.service.docker_image }}:latest
+          tags: bmatox/distrischool-professor-service:latest
 
-  # Job 3: Build Frontend (Roda na Nuvem)
+  # Job 3: Build API Gateway
+  build-push-gateway:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api-gateway == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: api-gateway
+          push: true
+          tags: bmatox/distrischool-api-gateway:latest
+
+  # Job 4: Build Grades Service
+  build-push-grades:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.grades-service == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: grades-service
+          push: true
+          tags: bmatox/distrischool-grades-service:latest
+
+  # Job 5: Build Communication Service
+  build-push-communication:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.communication-service == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: communication-service
+          push: true
+          tags: bmatox/distrischool-communication-service:latest
+
+  # Job 6: Build Aluno Service
+  build-push-aluno:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.aluno-service == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: distrischool-aluno-main
+          push: true
+          tags: bmatox/distrischool-aluno-service:latest
+
+  # Job 7: Build User Service
+  build-push-user:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.user-service == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: distrischool-user-service-main/user-service
+          push: true
+          tags: bmatox/distrischool-user-service:latest
+
+  # Job 8: Build Frontend (Roda na Nuvem)
   build-push-frontend:
     runs-on: ubuntu-latest
     needs: detect-changes
@@ -127,15 +222,31 @@ jobs:
           push: true
           tags: bmatox/distrischool-frontend:latest
 
-  # Job 4: DEPLOY LOCAL (Roda DENTRO do seu servidor)
+  # Job 9: DEPLOY LOCAL (Roda DENTRO do seu servidor)
   deploy-local:
     runs-on: self-hosted
-    needs: [detect-changes, build-push-backend, build-push-frontend]
-    # Executa se tudo deu certo
+    needs: 
+      - detect-changes
+      - build-push-professor
+      - build-push-gateway
+      - build-push-grades
+      - build-push-communication
+      - build-push-aluno
+      - build-push-user
+      - build-push-frontend
+    # Executa se pelo menos um build foi bem-sucedido
     if: |
       always() && 
       needs.detect-changes.result == 'success' &&
-      (needs.build-push-backend.result == 'success' || needs.build-push-frontend.result == 'success')
+      (
+        needs.build-push-professor.result == 'success' ||
+        needs.build-push-gateway.result == 'success' ||
+        needs.build-push-grades.result == 'success' ||
+        needs.build-push-communication.result == 'success' ||
+        needs.build-push-aluno.result == 'success' ||
+        needs.build-push-user.result == 'success' ||
+        needs.build-push-frontend.result == 'success'
+      )
     steps:
       - name: Restart Services via Kubectl Local
         env:
