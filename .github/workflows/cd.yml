@@ -27,8 +27,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0  # Busca todo o histórico para comparação
-
+          fetch-depth: 0  # Busca completa para comparar mudanças
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -223,7 +222,7 @@ jobs:
           push: true
           tags: bmatox/distrischool-frontend:latest
 
-  # Job 9: DEPLOY LOCAL (Roda DENTRO do seu servidor)
+  # Job 9: DEPLOY LOCAL (Roda DENTRO do servidor)
   deploy-local:
     runs-on: self-hosted
     needs: 
@@ -265,12 +264,12 @@ jobs:
             DEPLOYMENT=$3
           
             if [ "$SHOULD_UPDATE" == "true" ]; then
-              echo "🚀 Atualizando $SERVICE_NAME..."
+              echo "Atualizando $SERVICE_NAME..."
               # Roda direto no terminal do servidor, sem SSH
               kubectl rollout restart deployment/$DEPLOYMENT
               kubectl rollout status deployment/$DEPLOYMENT --timeout=2m
             else
-              echo "⏭️ $SERVICE_NAME sem alterações."
+              echo "[PULA] $SERVICE_NAME sem alterações."
             fi
           }
 
