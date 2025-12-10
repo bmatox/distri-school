@@ -5,6 +5,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+    initialization-mode: always
+    continue-on-error: true
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -18,6 +20,11 @@ spring:
     listener:
       simple:
         auto-startup: false
+  sql:
+    init:
+      data-locations: classpath:data-h2.sql
+      mode: always
+      continue-on-error: true
 
 logging:
   level:
