@@ -22,17 +22,29 @@ spec:
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:postgresql://postgres-service:5432/distrischool_db"
         - name: SPRING_DATASOURCE_USERNAME
-          value: "postgres"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
         - name: SPRING_DATASOURCE_PASSWORD
-          value: "postgres"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
         - name: SPRING_RABBITMQ_HOST
           value: "rabbitmq-service"
         - name: SPRING_RABBITMQ_PORT
           value: "5672"
         - name: SPRING_RABBITMQ_USERNAME
-          value: "guest"
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: RABBITMQ_DEFAULT_USER
         - name: SPRING_RABBITMQ_PASSWORD
-          value: "guest"
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secret
+              key: RABBITMQ_DEFAULT_PASS
         - name: SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA
           value: "communication_schema"
         - name: SPRING_FLYWAY_SCHEMAS
