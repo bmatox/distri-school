@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { notificationsService } from '../services/notificationsService';
+import LogoutConfirmModal from './LogoutConfirmModal';
 import './Header.css';
 
 function Header() {
-  const { user, logout } = useAuth();
+  const { user, logout, openLogoutModal, closeLogoutModal, logoutModalOpen } = useAuth();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -75,13 +76,18 @@ function Header() {
                   <span className="notification-badge">{unreadCount}</span>
                 )}
               </button>
-              <button className="header-btn logout-btn" onClick={handleLogout}>
+              <button className="header-btn logout-btn" onClick={openLogoutModal}>
                 <span>🚪</span> Sair
               </button>
             </>
           )}
         </div>
       </div>
+      <LogoutConfirmModal
+        isOpen={logoutModalOpen}
+        onConfirm={handleLogout}
+        onCancel={closeLogoutModal}
+      />
     </header>
   );
 }

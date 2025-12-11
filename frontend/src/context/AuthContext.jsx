@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in on mount
@@ -35,6 +36,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    setLogoutModalOpen(false);
+  };
+
+  const openLogoutModal = () => {
+    setLogoutModalOpen(true);
+  };
+
+  const closeLogoutModal = () => {
+    setLogoutModalOpen(false);
   };
 
   const isAuthenticated = () => {
@@ -52,6 +62,9 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated,
     hasRole,
+    logoutModalOpen,
+    openLogoutModal,
+    closeLogoutModal,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
