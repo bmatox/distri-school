@@ -98,7 +98,5 @@ app:
     allow-credentials: false
   rate-limiting:
     enabled: true
-    # Rate limiting configuration (requests per second)
     replenish-rate: ${RATE_LIMIT_REPLENISH_RATE:20}
-    # Maximum burst capacity
     burst-capacity: ${RATE_LIMIT_BURST_CAPACITY:40}
