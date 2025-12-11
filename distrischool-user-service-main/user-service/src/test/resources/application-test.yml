@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:userstest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    url: jdbc:h2:mem:userstest;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS user_schema
     username: sa
     password: ""
     driver-class-name: org.h2.Driver
@@ -10,6 +10,7 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
       hibernate.jdbc.time_zone: UTC
+      hibernate.default_schema: user_schema
     defer-datasource-initialization: true
   flyway:
     enabled: false
