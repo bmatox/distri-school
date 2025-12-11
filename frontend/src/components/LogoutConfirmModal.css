@@ -45,7 +45,7 @@
 }
 
 .logout-modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #044cf4 0%, #0338b8 100%);
   color: white;
   padding: 24px;
   display: flex;
@@ -149,12 +149,12 @@
 }
 
 .logout-modal-btn-confirm {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #044cf4 0%, #0338b8 100%);
   color: white;
 }
 
 .logout-modal-btn-confirm:hover {
-  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 16px rgba(4, 76, 244, 0.4);
   transform: translateY(-2px);
 }
 
