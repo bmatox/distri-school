@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { alunoService } from '../services/alunoService';
 import { turmaService } from '../services/turmaService';
 import { cursoService } from '../services/cursoService';
+import { Lightbulb, AlertCircle, Inbox, Edit2, Trash2, RefreshCw } from 'lucide-react';
 import './ProfessorPage.css';
 
 function AlunoPage() {
@@ -209,13 +210,13 @@ function AlunoPage() {
       <div className="page-header">
         <h2>Gestão de Alunos</h2>
         <div className="info-badge">
-          <p>💡 Para cadastrar novos alunos, acesse a aba <strong>Usuários</strong> e selecione o perfil "Aluno"</p>
+          <p><Lightbulb size={18} style={{display: 'inline', marginRight: '8px'}} />Para cadastrar novos alunos, acesse a aba <strong>Usuários</strong> e selecione o perfil "Aluno"</p>
         </div>
       </div>
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}
@@ -362,7 +363,7 @@ function AlunoPage() {
             </fieldset>
             <div className="form-actions">
               <button type="submit" className="btn-success">
-                💾 Salvar Alterações
+                Salvar Alterações
               </button>
               <button
                 type="button"
@@ -382,7 +383,7 @@ function AlunoPage() {
 
       {alunos.length === 0 ? (
         <div className="empty-state">
-          <p>📋 Nenhum aluno cadastrado.</p>
+          <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhum aluno cadastrado.</p>
           <p className="empty-state-hint">Cadastre alunos na aba Usuários selecionando o perfil "Aluno"</p>
         </div>
       ) : (
@@ -397,37 +398,37 @@ function AlunoPage() {
                     className="btn-edit"
                     title="Editar"
                   >
-                    ✏️
+                    <Edit2 size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(aluno.id)}
                     className="btn-delete"
                     title="Excluir"
                   >
-                    🗑️
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
               <div className="card-body">
                 <p>
-                  <strong>🎫 Matrícula:</strong> {aluno.matricula}
+                  <strong>Matrícula:</strong> {aluno.matricula}
                 </p>
                 <p>
-                  <strong>📚 Curso:</strong> {getCursoNome(aluno.cursoId)}
+                  <strong>Curso:</strong> {getCursoNome(aluno.cursoId)}
                 </p>
                 <p>
-                  <strong>👥 Turma:</strong> {getTurmaNome(aluno.turmaId)}
+                  <strong>Turma:</strong> {getTurmaNome(aluno.turmaId)}
                 </p>
                 <p>
-                  <strong>📱 Contato:</strong> {aluno.contato}
+                  <strong>Contato:</strong> {aluno.contato}
                 </p>
                 <p>
-                  <strong>🎂 Nascimento:</strong>{' '}
+                  <strong>Nascimento:</strong>{' '}
                   {formatDateForDisplay(aluno.dataNascimento)}
                 </p>
                 {aluno.endereco && (aluno.endereco.rua || aluno.endereco.cidade) && (
                   <p>
-                    <strong>📍 Endereço:</strong>{' '}
+                    <strong>Endereço:</strong>{' '}
                     {aluno.endereco.rua && aluno.endereco.numero
                       ? `${aluno.endereco.rua}, ${aluno.endereco.numero}`
                       : aluno.endereco.rua || ''}
@@ -444,7 +445,8 @@ function AlunoPage() {
 
       <div className="page-actions">
         <button onClick={fetchAlunos} className="btn-secondary">
-          🔄 Atualizar Lista
+          <RefreshCw size={16} style={{ marginRight: '6px' }} />
+          Atualizar Lista
         </button>
       </div>
     </div>

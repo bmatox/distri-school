@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { LogOut, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import './LogoutConfirmModal.css';
 
@@ -29,14 +30,14 @@ function LogoutConfirmModal({ isOpen, onConfirm, onCancel }) {
     <div className="logout-modal-overlay" onClick={onCancel}>
       <div className="logout-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="logout-modal-header">
-          <div className="logout-modal-icon">🚪</div>
+          <div className="logout-modal-icon"><LogOut size={32} /></div>
           <h2>Confirmar Saída</h2>
           <button
             className="logout-modal-close"
             onClick={onCancel}
             title="Fechar"
           >
-            ✕
+            <X size={20} />
           </button>
         </div>
 

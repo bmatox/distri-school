@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Users, UserCheck, GraduationCap, BookOpen, Book } from 'lucide-react';
 import './RoleDashboard.css';
 
 function AdminDashboard() {
@@ -14,7 +15,7 @@ function AdminDashboard() {
 
       <div className="dashboard-cards">
         <Link to="/usuarios" className="dashboard-card users">
-          <div className="card-icon">👥</div>
+          <div className="card-icon"><Users size={48} /></div>
           <h2>Usuários</h2>
           <p>Cadastre novos usuários e gerencie perfis (Alunos, Professores, Técnicos Administrativos)</p>
           <div className="card-actions">
@@ -24,7 +25,7 @@ function AdminDashboard() {
         </Link>
 
         <Link to="/professores" className="dashboard-card professors">
-          <div className="card-icon">👨‍🏫</div>
+          <div className="card-icon"><UserCheck size={48} /></div>
           <h2>Professores</h2>
           <p>Visualize e gerencie professores cadastrados no sistema</p>
           <div className="card-actions">
@@ -33,7 +34,7 @@ function AdminDashboard() {
         </Link>
 
         <Link to="/alunos" className="dashboard-card students">
-          <div className="card-icon">🎓</div>
+          <div className="card-icon"><GraduationCap size={48} /></div>
           <h2>Alunos</h2>
           <p>Visualize e gerencie alunos matriculados na instituição</p>
           <div className="card-actions">
@@ -42,7 +43,7 @@ function AdminDashboard() {
         </Link>
 
         <Link to="/cursos-turmas" className="dashboard-card courses">
-          <div className="card-icon">📚</div>
+          <div className="card-icon"><BookOpen size={48} /></div>
           <h2>Cursos e Turmas</h2>
           <p>Gerencie cursos, crie e organize turmas por período</p>
           <div className="card-actions">
@@ -52,7 +53,7 @@ function AdminDashboard() {
         </Link>
 
         <Link to="/disciplinas" className="dashboard-card disciplines">
-          <div className="card-icon">📖</div>
+          <div className="card-icon"><Book size={48} /></div>
           <h2>Disciplinas</h2>
           <p>Cadastre e gerencie disciplinas ofertadas por curso e turma</p>
           <div className="card-actions">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AlertCircle } from 'lucide-react';
 import './ProfessorList.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:54717';
@@ -46,7 +47,7 @@ function ProfessorList() {
       <div className="professor-list">
         <h2>Lista de Professores</h2>
         <div className="error">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={fetchProfessores}>Tentar Novamente</button>
         </div>
       </div>
@@ -73,7 +74,8 @@ function ProfessorList() {
       )}
       
       <button onClick={fetchProfessores} className="refresh-button">
-        🔄 Atualizar Lista
+        <RefreshCw size={16} style={{ marginRight: '6px' }} />
+        Atualizar Lista
       </button>
     </div>
   );

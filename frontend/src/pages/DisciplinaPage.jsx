@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { disciplinaService } from '../services/disciplinaService';
 import { cursoService } from '../services/cursoService';
 import { turmaService } from '../services/turmaService';
+import { Plus, X, AlertCircle, Inbox, Edit2, Trash2, Save, RefreshCw } from 'lucide-react';
 import './CursoTurmaPage.css';
 
 function DisciplinaPage() {
@@ -141,13 +142,13 @@ function DisciplinaPage() {
       <div className="page-header">
         <h2>Gestão de Disciplinas</h2>
         <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-          {showForm ? '❌ Cancelar' : '➕ Nova Disciplina'}
+          {showForm ? <><X size={18} /> Cancelar</> : <><Plus size={18} /> Nova Disciplina</>}
         </button>
       </div>
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}
@@ -218,7 +219,7 @@ function DisciplinaPage() {
             </div>
             <div className="form-actions">
               <button type="submit" className="btn-success">
-                💾 {editingDisciplina ? 'Atualizar' : 'Salvar'} Disciplina
+                <Save size={18} style={{marginRight: '4px', display: 'inline'}} />{editingDisciplina ? 'Atualizar' : 'Salvar'} Disciplina
               </button>
               <button
                 type="button"
@@ -237,7 +238,7 @@ function DisciplinaPage() {
 
       {disciplinas.length === 0 ? (
         <div className="empty-state">
-          <p>📋 Nenhuma disciplina cadastrada.</p>
+          <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhuma disciplina cadastrada.</p>
         </div>
       ) : (
         <div className="grid-container">
@@ -251,32 +252,32 @@ function DisciplinaPage() {
                     className="btn-edit"
                     title="Editar"
                   >
-                    ✏️
+                    <Edit2 size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(disciplina.id)}
                     className="btn-delete"
                     title="Excluir"
                   >
-                    🗑️
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
               <div className="card-body">
                 {disciplina.descricao && (
                   <p>
-                    <strong>📄 Descrição:</strong> {disciplina.descricao}
+                    <strong>Descrição:</strong> {disciplina.descricao}
                   </p>
                 )}
                 <p>
-                  <strong>📚 Curso:</strong> {disciplina.turma?.curso?.nome || 'N/A'}
+                  <strong>Curso:</strong> {disciplina.turma?.curso?.nome || 'N/A'}
                 </p>
                 <p>
-                  <strong>🎓 Turma:</strong> {disciplina.turma?.nome || 'N/A'}
+                  <strong>Turma:</strong> {disciplina.turma?.nome || 'N/A'}
                 </p>
                 {disciplina.turma && (
                   <p>
-                    <strong>📅 Período:</strong> {disciplina.turma.ano}.{disciplina.turma.semestre}
+                    <strong>Período:</strong> {disciplina.turma.ano}.{disciplina.turma.semestre}
                   </p>
                 )}
               </div>
@@ -287,7 +288,8 @@ function DisciplinaPage() {
 
       <div className="page-actions">
         <button onClick={fetchAll} className="btn-secondary">
-          🔄 Atualizar Lista
+          <RefreshCw size={16} style={{ marginRight: '6px' }} />
+          Atualizar Lista
         </button>
       </div>
     </div>

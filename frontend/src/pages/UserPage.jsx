@@ -3,6 +3,7 @@ import { userService } from '../services/userService';
 // import { alunoService } from '../services/alunoService'; // <-- REMOVIDO (Não é mais necessário)
 import { cursoService } from '../services/cursoService';
 import { turmaService } from '../services/turmaService';
+import { Plus, X, AlertCircle, Inbox, RefreshCw } from 'lucide-react';
 import './UserPage.css';
 
 function UserPage() {
@@ -225,7 +226,7 @@ function UserPage() {
 
       // ATUALIZADO: Mensagem de sucesso genérica para alunos.
       if (payload.role === 'STUDENT') {
-        alert(`✅ Aluno criado com sucesso!\n\nA matrícula será gerada automaticamente pelo sistema.`);
+        alert(`Aluno criado com sucesso!\n\nA matrícula será gerada automaticamente pelo sistema.`);
       }
 
       setShowForm(false);
@@ -319,13 +320,13 @@ function UserPage() {
         <div className="page-header">
           <h2>Gestão de Usuários</h2>
           <button onClick={() => setShowForm(!showForm)} className="btn-primary">
-            {showForm ? '❌ Cancelar' : '➕ Novo Usuário'}
+            {showForm ? <><X size={18} /> Cancelar</> : <><Plus size={18} /> Novo Usuário</>}
           </button>
         </div>
 
         {error && (
             <div className="error-message">
-              <p>❌ {error}</p>
+              <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
               <button onClick={() => setError(null)}>Fechar</button>
             </div>
         )}
@@ -639,7 +640,7 @@ function UserPage() {
 
                 <div className="form-actions">
                   <button type="submit" className="btn-success">
-                    💾 Salvar Usuário
+                    Salvar Usuário
                   </button>
                   <button
                       type="button"
@@ -655,7 +656,7 @@ function UserPage() {
 
         {users.length === 0 ? (
             <div className="empty-state">
-              <p>📋 Nenhum usuário cadastrado.</p>
+              <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhum usuário cadastrado.</p>
             </div>
         ) : (
             <div className="grid-container">
@@ -666,19 +667,19 @@ function UserPage() {
                     </div>
                     <div className="card-body">
                       <p>
-                        <strong>📧 Email:</strong> {user.email}
+                        <strong>Email:</strong> {user.email}
                       </p>
                       <p>
-                        <strong>👤 Perfil:</strong> {getRoleName(user.role)}
+                        <strong>Perfil:</strong> {getRoleName(user.role)}
                       </p>
                       {user.userType && (
                           <p>
-                            <strong>📋 Tipo:</strong> {user.userType}
+                            <strong>Tipo:</strong> {user.userType}
                           </p>
                       )}
                       {user.createdAt && (
                           <p>
-                            <strong>📅 Criado em:</strong>{' '}
+                            <strong>Criado em:</strong>{' '}
                             {new Date(user.createdAt).toLocaleDateString('pt-BR')}
                           </p>
                       )}
@@ -690,7 +691,8 @@ function UserPage() {
 
         <div className="page-actions">
           <button onClick={fetchUsers} className="btn-secondary">
-            🔄 Atualizar Lista
+            <RefreshCw size={16} style={{ marginRight: '6px' }} />
+            Atualizar Lista
           </button>
         </div>
       </div>

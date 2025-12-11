@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { notificationsService } from '../services/notificationsService';
+import { GraduationCap, Bell, LogOut } from 'lucide-react';
 import LogoutConfirmModal from './LogoutConfirmModal';
 import './Header.css';
 
@@ -53,7 +54,7 @@ function Header() {
     <header className="app-header">
       <div className="header-container">
         <div className="header-brand">
-          <div className="brand-icon">🎓</div>
+          <div className="brand-icon"><GraduationCap size={32} /></div>
           <div className="brand-text">
             <h1>DistriSchool</h1>
             <p>Sistema de Gestão Escolar</p>
@@ -71,13 +72,13 @@ function Header() {
                 onClick={handleNotificationsClick}
                 title="Notificações"
               >
-                <span className="notification-icon">🔔</span>
+                <span className="notification-icon"><Bell size={20} /></span>
                 {unreadCount > 0 && (
                   <span className="notification-badge">{unreadCount}</span>
                 )}
               </button>
               <button className="header-btn logout-btn" onClick={openLogoutModal}>
-                <span>🚪</span> Sair
+                <LogOut size={18} /> Sair
               </button>
             </>
           )}

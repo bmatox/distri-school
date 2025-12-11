@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { notificationsService } from '../services/notificationsService';
+import { FileText, Inbox } from 'lucide-react';
 import './NotificationsPage.css';
 
 function NotificationsPage() {
@@ -64,16 +65,8 @@ function NotificationsPage() {
   };
 
   const getNotificationIcon = (type) => {
-    switch (type) {
-      case 'GRADE_POSTED':
-        return '📝';
-      case 'ANNOUNCEMENT':
-        return '📢';
-      case 'SYSTEM':
-        return '⚙️';
-      default:
-        return '📬';
-    }
+    // Removed emoji icons - using CSS classes instead
+    return null;
   };
 
   const formatDate = (dateString) => {
@@ -102,7 +95,7 @@ function NotificationsPage() {
   return (
     <div className="notifications-page">
       <div className="notifications-header">
-        <h1>📬 Notificações</h1>
+        <h1><Inbox size={24} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />Notificações</h1>
         <div className="filter-buttons">
           <button
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}

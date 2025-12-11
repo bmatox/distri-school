@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
+import { User, AlertCircle } from 'lucide-react';
 import PropTypes from 'prop-types';
 import './UserSelector.css';
 
@@ -83,11 +84,11 @@ function UserSelector({ role, onUserSelected, initialUserId = null }) {
 
   return (
     <div className="user-selector">
-      <h3>👤 Usuário do Sistema</h3>
+      <h3><User size={20} style={{display: 'inline', marginRight: '8px'}} />Usuário do Sistema</h3>
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={16} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}

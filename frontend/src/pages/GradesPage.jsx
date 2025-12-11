@@ -4,6 +4,7 @@ import { alunoService } from '../services/alunoService';
 import { professorService } from '../services/professorService';
 import { disciplinaService } from '../services/disciplinaService';
 import { useAuth } from '../context/AuthContext';
+import { FileText, Trash2 } from 'lucide-react';
 import './GradesPage.css';
 
 function GradesPage() {
@@ -230,7 +231,7 @@ function GradesPage() {
   return (
     <div className="grades-page">
       <div className="grades-header">
-        <h1>📝 {user?.role === 'STUDENT' ? 'Minhas Notas' : 'Gestão de Notas'}</h1>
+        <h1><FileText size={28} style={{display: 'inline', marginRight: '12px', verticalAlign: 'middle'}} />{user?.role === 'STUDENT' ? 'Minhas Notas' : 'Gestão de Notas'}</h1>
         {user?.role !== 'STUDENT' && (
           <button 
             className="btn-primary"
@@ -420,7 +421,7 @@ function GradesPage() {
                           onClick={() => handleDelete(grade.id)}
                           title="Excluir nota"
                         >
-                          🗑️
+                          <Trash2 size={16} />
                         </button>
                       </td>
                     )}

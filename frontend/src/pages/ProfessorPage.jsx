@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { professorService } from '../services/professorService';
 import { turmaService } from '../services/turmaService';
+import { Lightbulb, AlertCircle, Inbox, Edit2, Trash2, RefreshCw } from 'lucide-react';
 import './ProfessorPage.css';
 
 function ProfessorPage() {
@@ -121,13 +122,13 @@ function ProfessorPage() {
       <div className="page-header">
         <h2>Gestão de Professores</h2>
         <div className="info-badge">
-          <p>💡 Para cadastrar novos professores, acesse a aba <strong>Usuários</strong> e selecione o perfil "Professor"</p>
+          <p><Lightbulb size={18} style={{display: 'inline', marginRight: '8px'}} />Para cadastrar novos professores, acesse a aba <strong>Usuários</strong> e selecione o perfil "Professor"</p>
         </div>
       </div>
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}
@@ -199,7 +200,7 @@ function ProfessorPage() {
             </div>
             <div className="form-actions">
               <button type="submit" className="btn-success">
-                💾 Salvar Alterações
+                Salvar Alterações
               </button>
               <button
                 type="button"
@@ -219,7 +220,7 @@ function ProfessorPage() {
 
       {professores.length === 0 ? (
         <div className="empty-state">
-          <p>📋 Nenhum professor cadastrado.</p>
+          <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhum professor cadastrado.</p>
           <p className="empty-state-hint">Cadastre professores na aba Usuários selecionando o perfil "Professor"</p>
         </div>
       ) : (
@@ -234,29 +235,29 @@ function ProfessorPage() {
                     className="btn-edit"
                     title="Editar"
                   >
-                    ✏️
+                    <Edit2 size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(professor.id)}
                     className="btn-delete"
                     title="Excluir"
                   >
-                    🗑️
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
               <div className="card-body">
                 <p>
-                  <strong>📧 Email:</strong> {professor.email}
+                  <strong>Email:</strong> {professor.email}
                 </p>
                 <p>
-                  <strong>📚 Especialidade:</strong> {professor.especialidade}
+                  <strong>Especialidade:</strong> {professor.especialidade}
                 </p>
                 <p>
-                  <strong>🎓 Turma:</strong> {getTurmaNome(professor.turmaId)}
+                  <strong>Turma:</strong> {getTurmaNome(professor.turmaId)}
                 </p>
                 <p>
-                  <strong>📅 Contratação:</strong>{' '}
+                  <strong>Contratação:</strong>{' '}
                   {new Date(professor.dataContratacao).toLocaleDateString('pt-BR')}
                 </p>
               </div>
@@ -267,7 +268,8 @@ function ProfessorPage() {
 
       <div className="page-actions">
         <button onClick={fetchProfessores} className="btn-secondary">
-          🔄 Atualizar Lista
+          <RefreshCw size={16} style={{ marginRight: '6px' }} />
+          Atualizar Lista
         </button>
       </div>
     </div>

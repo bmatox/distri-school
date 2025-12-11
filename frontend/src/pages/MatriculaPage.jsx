@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { alunoService } from '../services/alunoService';
 import { disciplinaService } from '../services/disciplinaService';
 import { matriculaService } from '../services/matriculaService';
+import { AlertTriangle, AlertCircle, Loader, CheckCircle, Inbox, X, RefreshCw } from 'lucide-react';
 import './ProfessorPage.css';
 
 function MatriculaPage() {
@@ -104,7 +105,7 @@ function MatriculaPage() {
       <div className="page-container">
         <h2>Matrícula em Disciplinas</h2>
         <div className="error-message">
-          <p>⚠️ Dados do aluno não encontrados. Entre em contato com a secretaria.</p>
+          <p><AlertTriangle size={18} style={{display: 'inline', marginRight: '8px'}} />Dados do aluno não encontrados. Entre em contato com a secretaria.</p>
         </div>
       </div>
     );
@@ -115,14 +116,14 @@ function MatriculaPage() {
       <div className="page-header">
         <h2>Matrícula em Disciplinas</h2>
         <div className="info-badge">
-          <p>👤 <strong>Aluno:</strong> {alunoData.nome}</p>
-          <p>📋 <strong>Matrícula:</strong> {alunoData.matricula}</p>
+          <p><strong>Aluno:</strong> {alunoData.nome}</p>
+          <p><strong>Matrícula:</strong> {alunoData.matricula}</p>
         </div>
       </div>
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}
@@ -153,7 +154,7 @@ function MatriculaPage() {
               ))}
             </select>
             <small>
-              {!alunoData.turmaId && '⚠️ Você não está associado a uma turma. Entre em contato com a secretaria.'}
+              {!alunoData.turmaId && <><AlertTriangle size={14} style={{display: 'inline', marginRight: '4px'}} />Você não está associado a uma turma. Entre em contato com a secretaria.</>}
               {alunoData.turmaId && disciplinasDisponiveis.length === 0 && 'Você já está matriculado em todas as disciplinas disponíveis.'}
             </small>
           </div>
@@ -163,7 +164,7 @@ function MatriculaPage() {
               className="btn-success"
               disabled={enrolling || !selectedDisciplina || disciplinasDisponiveis.length === 0}
             >
-              {enrolling ? '⏳ Matriculando...' : '✅ Confirmar Matrícula'}
+              {enrolling ? <><Loader size={18} className="spinning" /> Matriculando...</> : <><CheckCircle size={18} /> Confirmar Matrícula</>}
             </button>
           </div>
         </form>
@@ -176,7 +177,7 @@ function MatriculaPage() {
 
       {matriculas.length === 0 ? (
         <div className="empty-state">
-          <p>📋 Você ainda não está matriculado em nenhuma disciplina.</p>
+          <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Você ainda não está matriculado em nenhuma disciplina.</p>
           <p className="empty-state-hint">Selecione uma disciplina acima para realizar sua matrícula.</p>
         </div>
       ) : (
@@ -191,27 +192,27 @@ function MatriculaPage() {
                     className="btn-delete"
                     title="Cancelar matrícula"
                   >
-                    ❌
+                    <X size={18} />
                   </button>
                 </div>
               </div>
               <div className="card-body">
                 <p>
-                  <strong>📚 Curso:</strong>{' '}
+                  <strong>Curso:</strong>{' '}
                   {matricula.disciplina?.turma?.curso?.nome || 'N/A'}
                 </p>
                 <p>
-                  <strong>🎓 Turma:</strong>{' '}
+                  <strong>Turma:</strong>{' '}
                   {matricula.disciplina?.turma?.nome || 'N/A'}
                 </p>
                 <p>
-                  <strong>📅 Data da Matrícula:</strong>{' '}
+                  <strong>Data da Matrícula:</strong>{' '}
                   {matricula.dataMatricula 
                     ? new Date(matricula.dataMatricula).toLocaleDateString('pt-BR')
                     : 'N/A'}
                 </p>
                 <p>
-                  <strong>📊 Status:</strong>{' '}
+                  <strong>Status:</strong>{' '}
                   <span className={`status-badge ${matricula.status?.toLowerCase()}`}>
                     {matricula.status || 'ATIVO'}
                   </span>
@@ -224,7 +225,8 @@ function MatriculaPage() {
 
       <div className="page-actions">
         <button onClick={fetchData} className="btn-secondary">
-          🔄 Atualizar Lista
+          <RefreshCw size={16} style={{ marginRight: '6px' }} />
+          Atualizar Lista
         </button>
       </div>
     </div>

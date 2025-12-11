@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { cursoService } from '../services/cursoService';
 import { turmaService } from '../services/turmaService';
+import { BookOpen, GraduationCap, Plus, X, AlertCircle, Inbox, Edit2, Trash2, Save, RefreshCw } from 'lucide-react';
 import './CursoTurmaPage.css';
 
 function CursoTurmaPage() {
@@ -281,7 +282,7 @@ function CursoTurmaPage() {
 
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p><AlertCircle size={18} style={{display: 'inline', marginRight: '4px'}} />{error}</p>
           <button onClick={() => setError(null)}>Fechar</button>
         </div>
       )}
@@ -292,13 +293,13 @@ function CursoTurmaPage() {
           className={`tab-button ${activeTab === 'cursos' ? 'active' : ''}`}
           onClick={() => setActiveTab('cursos')}
         >
-          📚 Cursos
+          <BookOpen size={18} style={{marginRight: '8px', display: 'inline'}} />Cursos
         </button>
         <button
           className={`tab-button ${activeTab === 'turmas' ? 'active' : ''}`}
           onClick={() => setActiveTab('turmas')}
         >
-          🎓 Turmas
+          <GraduationCap size={18} style={{marginRight: '8px', display: 'inline'}} />Turmas
         </button>
       </div>
 
@@ -308,7 +309,7 @@ function CursoTurmaPage() {
           <div className="tab-header">
             <h3>Cursos Cadastrados</h3>
             <button onClick={() => setShowCursoForm(!showCursoForm)} className="btn-primary">
-              {showCursoForm ? '❌ Cancelar' : '➕ Novo Curso'}
+              {showCursoForm ? <><X size={18} /> Cancelar</> : <><Plus size={18} /> Novo Curso</>}
             </button>
           </div>
 
@@ -360,7 +361,7 @@ function CursoTurmaPage() {
                 </div>
                 <div className="form-actions">
                   <button type="submit" className="btn-success">
-                    💾 {editingCurso ? 'Atualizar' : 'Salvar'} Curso
+                    <Save size={18} style={{marginRight: '4px', display: 'inline'}} />{editingCurso ? 'Atualizar' : 'Salvar'} Curso
                   </button>
                   <button
                     type="button"
@@ -379,7 +380,7 @@ function CursoTurmaPage() {
 
           {cursos.length === 0 ? (
             <div className="empty-state">
-              <p>📋 Nenhum curso cadastrado.</p>
+              <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhum curso cadastrado.</p>
             </div>
           ) : (
             <div className="grid-container">
@@ -393,25 +394,25 @@ function CursoTurmaPage() {
                         className="btn-edit"
                         title="Editar"
                       >
-                        ✏️
+                        <Edit2 size={18} />
                       </button>
                       <button
                         onClick={() => handleDeleteCurso(curso.id)}
                         className="btn-delete"
                         title="Excluir"
                       >
-                        🗑️
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
                   <div className="card-body">
                     {curso.descricao && (
                       <p>
-                        <strong>📄 Descrição:</strong> {curso.descricao}
+                        <strong>Descrição:</strong> {curso.descricao}
                       </p>
                     )}
                     <p>
-                      <strong>⏱️ Duração:</strong> {curso.duracaoSemestres} semestres
+                      <strong>Duração:</strong> {curso.duracaoSemestres} semestres
                     </p>
                   </div>
                 </div>
@@ -427,7 +428,7 @@ function CursoTurmaPage() {
           <div className="tab-header">
             <h3>Turmas Cadastradas</h3>
             <button onClick={() => setShowTurmaForm(!showTurmaForm)} className="btn-primary">
-              {showTurmaForm ? '❌ Cancelar' : '➕ Nova Turma'}
+              {showTurmaForm ? <><X size={18} /> Cancelar</> : <><Plus size={18} /> Nova Turma</>}
             </button>
           </div>
 
@@ -522,7 +523,7 @@ function CursoTurmaPage() {
                 </div>
                 <div className="form-actions">
                   <button type="submit" className="btn-success">
-                    💾 {editingTurma ? 'Atualizar' : 'Salvar'} Turma
+                    <Save size={18} style={{marginRight: '4px', display: 'inline'}} />{editingTurma ? 'Atualizar' : 'Salvar'} Turma
                   </button>
                   <button
                     type="button"
@@ -541,7 +542,7 @@ function CursoTurmaPage() {
 
           {turmas.length === 0 ? (
             <div className="empty-state">
-              <p>📋 Nenhuma turma cadastrada.</p>
+              <p><Inbox size={48} style={{display: 'block', margin: '0 auto 16px'}} />Nenhuma turma cadastrada.</p>
             </div>
           ) : (
             <div className="grid-container">
@@ -555,26 +556,26 @@ function CursoTurmaPage() {
                         className="btn-edit"
                         title="Editar"
                       >
-                        ✏️
+                        <Edit2 size={18} />
                       </button>
                       <button
                         onClick={() => handleDeleteTurma(turma.id)}
                         className="btn-delete"
                         title="Excluir"
                       >
-                        🗑️
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </div>
                   <div className="card-body">
                     <p>
-                      <strong>📚 Curso:</strong> {turma.curso?.nome || 'N/A'}
+                      <strong>Curso:</strong> {turma.curso?.nome || 'N/A'}
                     </p>
                     <p>
-                      <strong>📅 Ano:</strong> {turma.ano}
+                      <strong>Ano:</strong> {turma.ano}
                     </p>
                     <p>
-                      <strong>📆 Semestre:</strong> {turma.semestre}º
+                      <strong>Semestre:</strong> {turma.semestre}º
                     </p>
                   </div>
                 </div>
@@ -586,7 +587,8 @@ function CursoTurmaPage() {
 
       <div className="page-actions">
         <button onClick={() => { fetchCursos(); fetchTurmas(); }} className="btn-secondary">
-          🔄 Atualizar Lista
+          <RefreshCw size={16} style={{ marginRight: '6px' }} />
+          Atualizar Lista
         </button>
       </div>
     </div>
