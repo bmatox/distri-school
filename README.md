@@ -1,6 +1,6 @@
 # 🎓 DistriSchool - Plataforma de Gestão Escolar Distribuída
 
-**🌐 [Acessar Ambiente de Produção (Live Demo)](http://45.14.194.102/login)** | [Documentação Técnica](./docs) | [Roadmap](./ROADMAP.md)
+**🌐 [Acessar Ambiente de Produção (Live Demo)](http://45.14.194.102/login)** 
 
 O **DistriSchool** é uma plataforma completa de gestão escolar baseada em **arquitetura de microserviços**, desenvolvida com Spring Boot, containerizada com Docker e orquestrada com Kubernetes. É um projeto pessoal, mas que demonstra as melhores práticas de desenvolvimento de sistemas distribuídos, incluindo comunicação síncrona e assíncrona, isolamento de serviços, escalabilidade horizontal e resiliência a falhas.
 
