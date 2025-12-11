@@ -19,7 +19,7 @@ O DistriSchool foi deployado em um **VPS em produção** com implementação com
 | **Load Balancer** | NGINX Ingress Controller com WAF rules |
 | **Uptime Target** | 99.9% SLA com health checks contínuos |
 
-### 🔐 Security Hardening
+### 🔐 Segurança
 
 #### Firewalling (UFW - Uncomplicated Firewall)
 ```bash
