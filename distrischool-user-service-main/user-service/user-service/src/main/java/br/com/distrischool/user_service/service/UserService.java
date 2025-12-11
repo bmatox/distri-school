@@ -44,7 +44,7 @@ public class UserService {
 
     repository.save(u);
 
-    // Publish role-specific events with profile data
+   // publica 
     publishUserCreatedEvent(u, req);
 
     return toResponse(u);
