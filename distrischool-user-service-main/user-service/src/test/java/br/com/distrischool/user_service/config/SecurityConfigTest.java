@@ -5,6 +5,7 @@ import br.com.distrischool.user_service.controller.UserController;
 import br.com.distrischool.user_service.dto.LoginRequest;
 import br.com.distrischool.user_service.dto.LoginResponse;
 import br.com.distrischool.user_service.security.JwtAuthenticationFilter;
+import br.com.distrischool.user_service.security.JwtUtil;
 import br.com.distrischool.user_service.service.AuthService;
 import br.com.distrischool.user_service.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {AuthController.class, UserController.class})
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class})
 class SecurityConfigTest {
 
   @Autowired
@@ -43,6 +44,9 @@ class SecurityConfigTest {
 
   @MockBean
   private UserDetailsService userDetailsService;
+
+  @MockBean
+  private JwtUtil jwtUtil;
 
   @MockBean
   private JwtAuthenticationFilter jwtAuthenticationFilter;
