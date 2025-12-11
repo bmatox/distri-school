@@ -73,7 +73,7 @@ describe('UserPage Component', () => {
       expect(screen.getByText('João Silva')).toBeInTheDocument();
     });
 
-    const newUserButton = screen.getByText('➕ Novo Usuário');
+    const newUserButton = screen.getByText('Novo Usuário');
     await user.click(newUserButton);
 
     expect(screen.getByText('Cadastrar Novo Usuário')).toBeInTheDocument();
@@ -88,7 +88,7 @@ describe('UserPage Component', () => {
     });
 
     // Open form
-    const newUserButton = screen.getByText('➕ Novo Usuário');
+    const newUserButton = screen.getByText('Novo Usuário');
     await user.click(newUserButton);
 
     // Fill form with invalid contato
@@ -121,7 +121,7 @@ describe('UserPage Component', () => {
     });
 
     // Open form
-    const newUserButton = screen.getByText('➕ Novo Usuário');
+    const newUserButton = screen.getByText('Novo Usuário');
     await user.click(newUserButton);
 
     // The error handling is part of the component
@@ -151,7 +151,7 @@ describe('UserPage Component', () => {
     render(<UserPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('📋 Nenhum usuário cadastrado.')).toBeInTheDocument();
+      expect(screen.getByText('Nenhum usuário cadastrado.')).toBeInTheDocument();
     });
   });
 
@@ -159,7 +159,7 @@ describe('UserPage Component', () => {
     render(<UserPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('🔄 Atualizar Lista')).toBeInTheDocument();
+      expect(screen.getByText('Atualizar Lista')).toBeInTheDocument();
     });
   });
 
@@ -172,7 +172,7 @@ describe('UserPage Component', () => {
     });
 
     // Open form
-    const newUserButton = screen.getByText('➕ Novo Usuário');
+    const newUserButton = screen.getByText('Novo Usuário');
     await user.click(newUserButton);
 
     // Select STUDENT role to show student-specific fields
