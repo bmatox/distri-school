@@ -2,13 +2,16 @@ package br.com.distrischool.grades.service;
 
 import br.com.distrischool.grades.dto.CreateGradeRequest;
 import br.com.distrischool.grades.entity.Grade;
+import br.com.distrischool.grades.entity.OutboxEvent;
 import br.com.distrischool.grades.exception.GradeNotFoundException;
 import br.com.distrischool.grades.repository.GradeRepository;
+import br.com.distrischool.grades.repository.OutboxEventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +23,8 @@ import java.util.List;
 public class GradeService {
 
     private final GradeRepository gradeRepository;
-    private final RabbitTemplate rabbitTemplate;
+    private final OutboxEventRepository outboxEventRepository;
+    private final ObjectMapper objectMapper;
     
     private static final String EXCHANGE_NAME = "distrischool.events.exchange";
 
@@ -41,15 +45,24 @@ public class GradeService {
         grade.setEvaluationType(request.getEvaluationType());
         grade.setComments(request.getComments());
         
+        // Salva a Grade no banco
         Grade savedGrade = gradeRepository.save(grade);
         
-        // Publish event to RabbitMQ
+        // Transactional Outbox Pattern: Salva o evento na mesma transação
         try {
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "grade.created", savedGrade);
-            log.info("Published grade.created event for grade ID: {}", savedGrade.getId());
-        } catch (Exception e) {
-            log.error("Failed to publish grade.created event", e);
-            // Don't fail the transaction if event publishing fails
+            OutboxEvent outboxEvent = new OutboxEvent();
+            outboxEvent.setAggregateType("Grade");
+            outboxEvent.setAggregateId(savedGrade.getId());
+            outboxEvent.setEventType("grade.created");
+            outboxEvent.setRoutingKey("grade.created");
+            outboxEvent.setPayload(objectMapper.writeValueAsString(savedGrade));
+            outboxEvent.setSent(false);
+            
+            outboxEventRepository.save(outboxEvent);
+            log.info("Saved outbox event for grade.created: gradeId={}", savedGrade.getId());
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize grade for outbox event", e);
+            throw new RuntimeException("Failed to create outbox event", e);
         }
         
         return savedGrade;
@@ -82,12 +95,21 @@ public class GradeService {
         
         Grade updatedGrade = gradeRepository.save(grade);
         
-        // Publish event
+        // Transactional Outbox Pattern
         try {
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "grade.updated", updatedGrade);
-            log.info("Published grade.updated event for grade ID: {}", updatedGrade.getId());
-        } catch (Exception e) {
-            log.error("Failed to publish grade.updated event", e);
+            OutboxEvent outboxEvent = new OutboxEvent();
+            outboxEvent.setAggregateType("Grade");
+            outboxEvent.setAggregateId(updatedGrade.getId());
+            outboxEvent.setEventType("grade.updated");
+            outboxEvent.setRoutingKey("grade.updated");
+            outboxEvent.setPayload(objectMapper.writeValueAsString(updatedGrade));
+            outboxEvent.setSent(false);
+            
+            outboxEventRepository.save(outboxEvent);
+            log.info("Saved outbox event for grade.updated: gradeId={}", updatedGrade.getId());
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize grade for outbox event", e);
+            throw new RuntimeException("Failed to create outbox event", e);
         }
         
         return updatedGrade;
@@ -96,15 +118,25 @@ public class GradeService {
     @Transactional
     public void deleteGrade(Long id) {
         Grade grade = getGradeById(id);
-        gradeRepository.delete(grade);
         
-        // Publish event
+        // Transactional Outbox Pattern: Salva evento ANTES de deletar
         try {
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, "grade.deleted", grade);
-            log.info("Published grade.deleted event for grade ID: {}", id);
-        } catch (Exception e) {
-            log.error("Failed to publish grade.deleted event", e);
+            OutboxEvent outboxEvent = new OutboxEvent();
+            outboxEvent.setAggregateType("Grade");
+            outboxEvent.setAggregateId(grade.getId());
+            outboxEvent.setEventType("grade.deleted");
+            outboxEvent.setRoutingKey("grade.deleted");
+            outboxEvent.setPayload(objectMapper.writeValueAsString(grade));
+            outboxEvent.setSent(false);
+            
+            outboxEventRepository.save(outboxEvent);
+            log.info("Saved outbox event for grade.deleted: gradeId={}", id);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize grade for outbox event", e);
+            throw new RuntimeException("Failed to create outbox event", e);
         }
+        
+        gradeRepository.delete(grade);
     }
 
     // Fallback method for Circuit Breaker
