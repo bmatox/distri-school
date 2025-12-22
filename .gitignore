@@ -79,4 +79,11 @@ HELP.md
 # ===================================================================
 actionlint
 
+# ===================================================================
+# Kubernetes Secrets (Local Development Only)
+# ===================================================================
+# Esses arquivos existem apenas para desenvolvimento local
+# Em produção, usar: kubectl create secret ...
 k8s-manifests/auth-secret.yaml
+k8s-manifests/postgres-secret.yaml
+k8s-manifests/rabbitmq-secret.yaml
