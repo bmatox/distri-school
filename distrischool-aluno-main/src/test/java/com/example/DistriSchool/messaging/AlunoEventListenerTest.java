@@ -4,6 +4,7 @@ import com.example.DistriSchool.domain.Aluno;
 import com.example.DistriSchool.messaging.dto.AlunoEventDTO;
 import com.example.DistriSchool.messaging.dto.EnderecoEventDTO;
 import com.example.DistriSchool.repository.AlunoRepository;
+import com.example.DistriSchool.repository.ProcessedMessageRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +25,9 @@ class AlunoEventListenerTest {
     @Mock
     private AlunoRepository alunoRepository;
 
+    @Mock
+    private ProcessedMessageRepository processedMessageRepository;
+
     @InjectMocks
     private AlunoEventListener alunoEventListener;
 
@@ -30,6 +35,9 @@ class AlunoEventListenerTest {
 
     @BeforeEach
     void setUp() {
+        // Mock idempotency check to allow processing
+        when(processedMessageRepository.existsByMessageId(anyString())).thenReturn(false);
+        
         // Create a valid event with all required fields
         validEvent = AlunoEventDTO.builder()
                 .userId(1L)

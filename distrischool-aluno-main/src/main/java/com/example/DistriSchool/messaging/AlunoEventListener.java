@@ -2,13 +2,18 @@ package com.example.DistriSchool.messaging;
 
 import com.example.DistriSchool.domain.Aluno;
 import com.example.DistriSchool.domain.Endereco;
+import com.example.DistriSchool.entity.ProcessedMessage;
 import com.example.DistriSchool.messaging.dto.AlunoEventDTO;
 import com.example.DistriSchool.repository.AlunoRepository;
+import com.example.DistriSchool.repository.ProcessedMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 @Component
 @RequiredArgsConstructor
@@ -16,22 +21,35 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlunoEventListener {
     
     private final AlunoRepository alunoRepository;
+    private final ProcessedMessageRepository processedMessageRepository;
 
     @RabbitListener(queues = "#{alunoEventsQueue.name}")
     @Transactional
     public void handleAlunoEvent(AlunoEventDTO event) {
         log.info("Received aluno event: type={}, userId={}", event.getType(), event.getUserId());
         
+        // Idempotency check: Generate message ID from event data
+        String messageId = generateMessageId(event);
+        
+        if (processedMessageRepository.existsByMessageId(messageId)) {
+            log.info("Message {} already processed for userId={}, skipping (idempotency)", 
+                messageId, event.getUserId());
+            return;
+        }
+        
         if ("CREATED".equals(event.getType())) {
             // Check if aluno with this userId already exists
             if (alunoRepository.findByUserId(event.getUserId()).isPresent()) {
                 log.info("Aluno with userId={} already exists, skipping creation", event.getUserId());
+                // Mark as processed even if skipping to avoid reprocessing
+                markAsProcessed(messageId, event);
                 return;
             }
             
             // Validate required fields before processing
             if (!isValidEvent(event)) {
                 log.error("Invalid aluno event data: userId={}, validation failed", event.getUserId());
+                markAsProcessed(messageId, event); // Mark as processed to avoid reprocessing invalid events
                 return;
             }
             
@@ -64,6 +82,9 @@ public class AlunoEventListener {
             alunoRepository.save(aluno);
             log.info("Created aluno record for user: userId={}, alunoId={}", event.getUserId(), aluno.getId());
         }
+        
+        // Mark message as processed
+        markAsProcessed(messageId, event);
     }
     
     private boolean isValidEvent(AlunoEventDTO event) {
@@ -112,5 +133,45 @@ public class AlunoEventListener {
     private String generateMatricula() {
         Long sequence = alunoRepository.getNextMatriculaSequence();
         return String.valueOf(sequence);
+    }
+    
+    /**
+     * Generates a unique message ID from event data using SHA-256 hash.
+     */
+    private String generateMessageId(AlunoEventDTO event) {
+        try {
+            String eventString = String.format("%s-%d-%s", 
+                event.getType(), event.getUserId(), event.getNome());
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(eventString.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.substring(0, 64);
+        } catch (Exception e) {
+            log.error("Failed to generate message hash", e);
+            return "fallback-" + event.getUserId() + "-" + System.currentTimeMillis();
+        }
+    }
+    
+    /**
+     * Marks a message as processed in the database.
+     */
+    private void markAsProcessed(String messageId, AlunoEventDTO event) {
+        try {
+            ProcessedMessage processedMessage = new ProcessedMessage();
+            processedMessage.setMessageId(messageId);
+            processedMessage.setEventType(event.getType());
+            processedMessage.setAggregateId(event.getUserId());
+            processedMessage.setConsumerName("AlunoEventListener");
+            processedMessageRepository.save(processedMessage);
+            log.info("Message {} marked as processed for userId={}", messageId, event.getUserId());
+        } catch (Exception e) {
+            log.error("Failed to mark message as processed: messageId={}", messageId, e);
+            // Don't throw - we don't want to fail the entire message processing
+        }
     }
 }
