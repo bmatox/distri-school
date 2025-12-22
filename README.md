@@ -1,12 +1,12 @@
-# 🎓 DistriSchool - Plataforma de Gestão Escolar Distribuída
+# DistriSchool - Plataforma de Gestão Escolar Distribuída
 
-**🌐 [Acessar Ambiente de Produção (Live Demo)](http://45.14.194.102/login)** 
+**[Acessar Ambiente de Produção (Live Demo)](http://45.14.194.102/login)** 
 
-O **DistriSchool** é uma plataforma completa de gestão escolar baseada em **arquitetura de microserviços**, desenvolvida com Spring Boot, containerizada com Docker e orquestrada com Kubernetes. É um projeto pessoal, mas que demonstra as melhores práticas de desenvolvimento de sistemas distribuídos, incluindo comunicação síncrona e assíncrona, isolamento de serviços, escalabilidade horizontal e resiliência a falhas.
+O DistriSchool é uma plataforma de gestão escolar baseada em arquitetura de microserviços, desenvolvida com Spring Boot, containerizada com Docker e orquestrada com Kubernetes. Este projeto demonstra práticas de desenvolvimento de sistemas distribuídos, incluindo comunicação síncrona e assíncrona, isolamento de serviços, escalabilidade horizontal e resiliência a falhas.
 
-## ☁️ Infraestrutura de Produção (VPS) & Security
+## Infraestrutura de Produção e Segurança
 
-O DistriSchool foi deployado em um **VPS em produção** com implementação completa de segurança, conformidade e resiliência. A arquitetura segue princípios de **Zero Trust** e hardening de segurança em profundidade.
+A aplicação está deployada em um VPS com implementação de segurança, conformidade e resiliência. A arquitetura segue princípios de Zero Trust e endurecimento de segurança em múltiplas camadas.
 
 ### Ambiente de Produção
 
@@ -17,33 +17,33 @@ O DistriSchool foi deployado em um **VPS em produção** com implementação com
 | **Certificados SSL/TLS** | Let's Encrypt com renovação automática |
 | **Domain Name** | `distrischool.com` (HTTPS obrigatório) |
 | **Load Balancer** | NGINX Ingress Controller com WAF rules |
-| **Uptime Target** | 99.9% SLA com health checks contínuos |
+| **Uptime Target** | 99.9% SLA com monitoramento contínuo |
 
-### 🔐 Segurança
+### Segurança
 
-#### Firewalling (UFW - Uncomplicated Firewall)
+#### Firewall (UFW)
 ```bash
-# Política default: DROP (nada entra, nada sai)
+# Política padrão: DROP (nada entra, nada sai)
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
-# Whitelist de portas
+# Lista de permissões de portas
 sudo ufw allow 22/tcp    # SSH (restrito a IPs específicos)
 sudo ufw allow 80/tcp    # HTTP → HTTPS redirect
 sudo ufw allow 443/tcp   # HTTPS (produção)
 
-# Rate limiting
+# Limitação de taxa
 sudo ufw limit 22/tcp    # SSH: máx 6 conexões em 30s
 ```
 
-**Implementação**: Todas as portas closed exceto 80 (redirect HTTP), 443 (HTTPS) e SSH restrito por IP whitelist.
+**Implementação**: Todas as portas fechadas exceto 80 (redirect HTTP), 443 (HTTPS) e SSH restrito por lista de IPs permitidos.
 
-#### DDoS Protection (Fail2Ban)
+#### Proteção DDoS (Fail2Ban)
 ```bash
 # Filtros ativos:
 - sshd: Ban após 5 falhas em 10 minutos
-- http-get-dos: Ban após 50 requests em 30 segundos
-- http-limit-req: Rate limiting de requests
+- http-get-dos: Ban após 50 requisições em 30 segundos
+- http-limit-req: Limitação de taxa de requisições
 
 # Ações:
 - IP banido por 24 horas
@@ -51,23 +51,23 @@ sudo ufw limit 22/tcp    # SSH: máx 6 conexões em 30s
 - Alertas automáticos para IPs suspeitos
 ```
 
-**Implementação**: Proteção contra força bruta SSH, ataques DDoS HTTP, port scanning.
+**Implementação**: Proteção contra força bruta SSH, ataques DDoS HTTP e varredura de portas.
 
-#### Gestão de Secrets e Credenciais
+#### Gestão de Segredos e Credenciais
 
-**Príncípios**:
-- ✅ **Zero Hardcoding**: Nenhuma credencial no código ou arquivos de configuração
-- ✅ **Environment-Based**: Todas as variáveis sensíveis via environment variables
-- ✅ **Kubernetes Secrets**: JWT_SECRET, Database credentials, RabbitMQ credentials em K8s Secrets
-- ✅ **Rotation Policy**: Secrets rotacionados a cada 90 dias
-- ✅ **Audit Logging**: Todos os acessos a secrets registrados
+**Princípios**:
+- **Sem código fixo**: Nenhuma credencial no código ou arquivos de configuração
+- **Baseado em variáveis de ambiente**: Todas as variáveis sensíveis via environment variables
+- **Kubernetes Secrets**: JWT_SECRET, credenciais de banco de dados e RabbitMQ em K8s Secrets
+- **Política de rotação**: Secrets rotacionados a cada 90 dias
+- **Registro de auditoria**: Todos os acessos a secrets registrados
 
 **Segredos Gerenciados**:
 - `JWT_SECRET`: Chave HMAC-SHA256 para tokens JWT (32+ bytes)
-- `DB_PASSWORD`: PostgreSQL password (hashed storage)
-- `RABBITMQ_PASSWORD`: RabbitMQ credentials
-- `TLS_CERT`: SSL/TLS certificates (renovação automática)
-- `API_KEYS`: External service integrations
+- `DB_PASSWORD`: Senha do PostgreSQL (armazenamento com hash)
+- `RABBITMQ_PASSWORD`: Credenciais do RabbitMQ
+- `TLS_CERT`: Certificados SSL/TLS (renovação automática)
+- `API_KEYS`: Integrações com serviços externos
 
 **Implementação Kubernetes**:
 ```yaml
@@ -100,7 +100,7 @@ env:
 2. **Verificação de Identidade**
    - API Gateway valida JWT em primeiro ponto de entrada
    - Cada microsserviço valida independentemente
-   - Device fingerprinting em login para detecção de anomalias
+   - Identificação de dispositivo no login para detecção de anomalias
 
 3. **Autorização Granular**
    - Permissões por role (ADMIN, TEACHER, STUDENT, TECHNICAL_ADMIN)
@@ -109,7 +109,7 @@ env:
 
 4. **Criptografia em Trânsito**
    - TLS 1.3 obrigatório
-   - HSTS header com preload
+   - Cabeçalho HSTS com preload
    - Cipher suites modernos (AES-256-GCM, ChaCha20)
 
 5. **Criptografia em Repouso**
@@ -124,44 +124,44 @@ env:
    - IDS/IPS (Intrusion Detection/Prevention System)
 
 7. **Isolamento de Recursos**
-   - Network policies Kubernetes (ingress/egress rules)
-   - Resource quotas por namespace
-   - Pod security policies (runAsNonRoot, readOnlyRootFilesystem)
+   - Políticas de rede Kubernetes (regras de entrada/saída)
+   - Cotas de recursos por namespace
+   - Políticas de segurança de pod (execução sem root, sistema de arquivos somente leitura)
 
-### Monitoramento e Logging
+### Monitoramento e Registro de Logs
 
 **Stack Completo**:
 - **Prometheus**: Coleta de métricas (CPU, memória, requisições)
-- **Grafana**: Dashboards em tempo real
+- **Grafana**: Painéis em tempo real
 - **ELK Stack** (ou alternativa): Centralização de logs
-- **Alertmanager**: Notificações automáticas para SLA violations
+- **Alertmanager**: Notificações automáticas para violações de SLA
 
 **KPIs Monitorados**:
-- Response time (P95 < 200ms em produção)
-- Error rate (< 0.5%)
-- Database connection pool utilization
-- RabbitMQ message queue depth
-- Disk I/O e network utilization
+- Tempo de resposta (P95 < 200ms em produção)
+- Taxa de erro (< 0.5%)
+- Utilização do pool de conexões do banco de dados
+- Profundidade da fila de mensagens do RabbitMQ
+- Utilização de disco e rede
 
-### Backup e Disaster Recovery
+### Backup e Recuperação de Desastres
 
 **Estratégia**:
-- Database: Backups diários + snapshots contínuos (RPO 1 hora, RTO 30 min)
-- Configurações: Versionadas em Git com encrypted secrets
-- PVCs (Persistent Volumes): Replicação automática
+- Banco de dados: Backups diários + instantâneos contínuos (RPO 1 hora, RTO 30 min)
+- Configurações: Versionadas em Git com secrets criptografados
+- Volumes persistentes: Replicação automática
 - Plano de recuperação testado mensalmente
 
-### Compliance e Segurança
+### Conformidade e Segurança
 
-- ✅ **GDPR-Ready**: Dados pessoais criptografados, direito ao esquecimento implementado
-- ✅ **LGPD Compliance**: Termo de consentimento, auditoria de acesso
-- ✅ **PCI DSS Readiness**: Se houver processamento de pagamento
-- ✅ **Penetration Testing**: Teste de segurança realizado trimestralmente
-- ✅ **Code Security Scanning**: SAST (SonarQube) + DAST contínuo
+- **GDPR-Ready**: Dados pessoais criptografados, direito ao esquecimento implementado
+- **LGPD Compliance**: Termo de consentimento, auditoria de acesso
+- **PCI DSS Readiness**: Se houver processamento de pagamento
+- **Testes de Penetração**: Teste de segurança realizado trimestralmente
+- **Varredura de Segurança de Código**: SAST (SonarQube) + DAST contínuo
 
-## 🏗️ Arquitetura
+## Arquitetura
 
-A plataforma demonstra uma **arquitetura de microserviços completa e funcional**, com serviços independentes, comunicação síncrona e assíncrona, e infraestrutura distribuída.
+A plataforma demonstra uma arquitetura de microserviços completa e funcional, com serviços independentes, comunicação síncrona e assíncrona, e infraestrutura distribuída.
 
 ### Componentes Principais
 
@@ -175,31 +175,31 @@ A plataforma demonstra uma **arquitetura de microserviços completa e funcional*
 | **API Gateway** | Spring Cloud Gateway | 8080 | Roteamento centralizado e CORS |
 | **Frontend** | React + Nginx | 80 | Interface web moderna (SPA) |
 | **PostgreSQL** | PostgreSQL 15 | 5432 | Banco de dados relacional |
-| **RabbitMQ** | RabbitMQ 3 | 5672/15672 | Message broker para eventos assíncronos |
-| **Ingress** | NGINX Ingress | 80/443 | Roteamento externo e Load Balancing |
+| **RabbitMQ** | RabbitMQ 3 | 5672/15672 | Broker de mensagens para eventos assíncronos |
+| **Ingress** | NGINX Ingress | 80/443 | Roteamento externo e balanceamento de carga |
 
 ### Características da Arquitetura
 
-✅ **Microserviços Independentes**: Cada serviço pode ser desenvolvido, deployado e escalado separadamente  
-✅ **Database per Service**: Cada serviço tem seu próprio schema no banco de dados  
-✅ **Event-Driven**: Comunicação assíncrona via RabbitMQ para desacoplamento  
-✅ **API Gateway Pattern**: Ponto único de entrada para o frontend  
-✅ **Service Discovery**: Kubernetes DNS para localização automática de serviços  
-✅ **Health Checks**: Monitoramento individual de cada serviço  
-✅ **Horizontal Scaling**: Réplicas independentes com load balancing automático  
-✅ **Containerização**: Todos os componentes rodando em containers Docker  
-✅ **Resiliência**: Circuit Breaker e Retry patterns com Resilience4J  
-✅ **Notificações Assíncronas**: Sistema de notificações em tempo real via eventos
+- **Microserviços Independentes**: Cada serviço pode ser desenvolvido, deployado e escalado separadamente
+- **Banco de dados por serviço**: Cada serviço tem seu próprio schema no banco de dados
+- **Orientado a eventos**: Comunicação assíncrona via RabbitMQ para desacoplamento
+- **Padrão API Gateway**: Ponto único de entrada para o frontend
+- **Descoberta de serviços**: DNS do Kubernetes para localização automática de serviços
+- **Monitoramento de saúde**: Verificação individual de cada serviço
+- **Escalabilidade horizontal**: Réplicas independentes com balanceamento de carga automático
+- **Containerização**: Todos os componentes rodando em containers Docker
+- **Resiliência**: Padrões Circuit Breaker e Retry com Resilience4J
+- **Notificações Assíncronas**: Sistema de notificações em tempo real via eventos
 
-### 🔐 Gestão Unificada de Usuários e Sincronização Bidirecional
+### Gestão Unificada de Usuários e Sincronização Bidirecional
 
-O DistriSchool implementa um sistema de **sincronização bidirecional automática** entre microsserviços que garante consistência e flexibilidade:
+O DistriSchool implementa um sistema de sincronização bidirecional automática entre microsserviços que garante consistência e flexibilidade:
 
 **Sincronização Automática:**
-- ✅ Criar **User** com role TEACHER → Automaticamente cria **Professor**
-- ✅ Criar **User** com role STUDENT → Automaticamente cria **Aluno**
-- ✅ Criar **Professor** → Automaticamente cria **User** com role TEACHER
-- ✅ Criar **Aluno** → Automaticamente cria **User** com role STUDENT
+- Criar **User** com role TEACHER → Automaticamente cria **Professor**
+- Criar **User** com role STUDENT → Automaticamente cria **Aluno**
+- Criar **Professor** → Automaticamente cria **User** com role TEACHER
+- Criar **Aluno** → Automaticamente cria **User** com role STUDENT
 
 **Perfis de Usuário:**
 - **ADMIN**: Administradores do sistema
@@ -209,22 +209,22 @@ O DistriSchool implementa um sistema de **sincronização bidirecional automáti
 
 **Como Funciona:**
 - Comunicação via eventos RabbitMQ (assíncrona e desacoplada)
-- Listeners em cada serviço reagem aos eventos de outros serviços
+- Ouvintes em cada serviço reagem aos eventos de outros serviços
 - Vinculação automática via `userId` e `externalId`
-- Prevenção de duplicatas com verificações e constraints únicos
+- Prevenção de duplicatas com verificações e restrições únicas
 
-### 🔒 Autenticação e Autorização (JWT)
+### Autenticação e Autorização (JWT)
 
 O DistriSchool implementa um sistema completo de autenticação JWT e controle de acesso baseado em roles (RBAC):
 
 **Características:**
-- ✅ Autenticação JWT com tokens assinados (HMAC-SHA256)
-- ✅ Senhas criptografadas com BCrypt
-- ✅ Rotas protegidas no API Gateway
-- ✅ Protected Routes no frontend React
-- ✅ Controle de acesso baseado em roles (RBAC)
-- ✅ Login/Logout completo
-- ✅ Tokens com expiração configurável (padrão 24h)
+- Autenticação JWT com tokens assinados (HMAC-SHA256)
+- Senhas criptografadas com BCrypt
+- Rotas protegidas no API Gateway
+- Rotas protegidas no frontend React
+- Controle de acesso baseado em roles (RBAC)
+- Login/Logout completo
+- Tokens com expiração configurável (padrão 24h)
 
 **Credenciais Padrão:**
 - Email: `admin@distrischool.com`
@@ -239,17 +239,17 @@ O DistriSchool implementa um sistema completo de autenticação JWT e controle d
 5. API Gateway valida token antes de rotear para microserviços
 6. Frontend adapta interface baseado na role do usuário
 
-### 📝 Sistema de Notas e Avaliações
+### Sistema de Notas e Avaliações
 
-O DistriSchool inclui um **sistema completo de gestão de notas** que permite:
+O DistriSchool inclui um sistema completo de gestão de notas que permite:
 
 **Funcionalidades:**
-- ✅ Lançamento de notas por professores
-- ✅ Consulta de notas por aluno, professor ou disciplina
-- ✅ Múltiplos tipos de avaliação (Prova, Trabalho, Participação, Projeto, Seminário)
-- ✅ Comentários e observações por avaliação
-- ✅ Histórico completo de avaliações
-- ✅ Notificações automáticas para alunos quando notas são lançadas
+- Lançamento de notas por professores
+- Consulta de notas por aluno, professor ou disciplina
+- Múltiplos tipos de avaliação (Prova, Trabalho, Participação, Projeto, Seminário)
+- Comentários e observações por avaliação
+- Histórico completo de avaliações
+- Notificações automáticas para alunos quando notas são lançadas
 
 **Arquitetura:**
 - Microsserviço independente (Grades Service) na porta 8083
@@ -257,34 +257,34 @@ O DistriSchool inclui um **sistema completo de gestão de notas** que permite:
 - Publicação de eventos via RabbitMQ quando notas são criadas
 - Circuit Breaker e Retry patterns para resiliência
 
-### 📬 Sistema de Comunicação e Notificações
+### Sistema de Comunicação e Notificações
 
-O sistema de **notificações assíncronas** mantém alunos e professores informados:
+O sistema de notificações assíncronas mantém alunos e professores informados:
 
 **Funcionalidades:**
-- ✅ Notificações automáticas quando notas são lançadas
-- ✅ Sistema de leitura/não lido com marcação de lida
-- ✅ Filtros para visualizar todas ou apenas notificações não lidas
-- ✅ Múltiplos tipos de notificação (Notas, Anúncios, Sistema)
-- ✅ Exclusão de notificações antigas
-- ✅ Timestamps relativos para melhor UX
+- Notificações automáticas quando notas são lançadas
+- Sistema de leitura/não lido com marcação de lida
+- Filtros para visualizar todas ou apenas notificações não lidas
+- Múltiplos tipos de notificação (Notas, Anúncios, Sistema)
+- Exclusão de notificações antigas
+- Timestamps relativos para melhor UX
 
 **Arquitetura:**
 - Microsserviço independente (Communication Service) na porta 8084
 - Banco de dados isolado (schema `communication_schema`)
-- Listener de eventos RabbitMQ que reage a eventos de outros serviços
+- Ouvinte de eventos RabbitMQ que reage a eventos de outros serviços
 - Criação automática de notificações baseada em eventos de negócio
-- Circuit Breaker e Retry patterns para resiliência
+- Padrões Circuit Breaker e Retry para resiliência
 
-### 🛡️ Padrões de Resiliência
+### Padrões de Resiliência
 
-Todos os microsserviços implementam **padrões de resiliência** usando Resilience4J:
+Todos os microsserviços implementam padrões de resiliência usando Resilience4J:
 
 **Circuit Breaker:**
 - Previne cascata de falhas entre serviços
 - Abre o circuito após 50% de falhas em 10 requisições
 - Transição automática para half-open após 5 segundos
-- Fallback methods para tratamento gracioso de erros
+- Métodos de fallback para tratamento gracioso de erros
 
 **Retry:**
 - 3 tentativas automáticas em caso de falha
@@ -293,11 +293,11 @@ Todos os microsserviços implementam **padrões de resiliência** usando Resilie
 - Aplicado em operações críticas de criação de dados
 
 **Configuração:**
-- Circuit breaker com sliding window de 10 requisições
-- Registro de health indicators para monitoramento
-- Event consumer buffer para análise de padrões
+- Circuit breaker com janela deslizante de 10 requisições
+- Registro de indicadores de saúde para monitoramento
+- Buffer de consumidor de eventos para análise de padrões
 
-## 🚀 Tecnologias
+## Tecnologias
 
 ### Backend
 - **Java 17** - Linguagem de programação
@@ -328,7 +328,7 @@ Todos os microsserviços implementam **padrões de resiliência** usando Resilie
 - **NGINX Ingress Controller** - Roteamento externo
 - **Maven** - Build automation
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - **Docker** instalado e rodando
 - **Minikube** instalado (versão 1.30+)
@@ -338,7 +338,7 @@ Todos os microsserviços implementam **padrões de resiliência** usando Resilie
 - **Git**
 - Pelo menos **8GB de RAM** disponível
 
-## 🎯 Início Rápido
+## Início Rápido
 
 ### 1. Clone o Repositório
 
@@ -349,7 +349,7 @@ cd distrischool-professor-tecadm-service
 
 ### 2. Deploy Automatizado (Recomendado)
 
-**O método mais simples e completo:**
+Para facilitar o setup, criei um script que automatiza o deploy completo:
 
 ```powershell
 # Executar como Administrador (Windows PowerShell)
@@ -363,14 +363,14 @@ http://distrischool.local
 ```
 
 O script `full-deploy.ps1` realiza automaticamente:
-- ✅ Configuração do Minikube (4 CPUs, 8GB RAM)
-- ✅ Habilitação e configuração do Ingress
-- ✅ Build de todas as imagens Docker
-- ✅ Deploy de infraestrutura (PostgreSQL, RabbitMQ)
-- ✅ Deploy de todos os microserviços
-- ✅ Deploy do frontend
-- ✅ Configuração do arquivo hosts
-- ✅ Validação do sistema
+- Configuração do Minikube (4 CPUs, 8GB RAM)
+- Habilitação e configuração do Ingress
+- Build de todas as imagens Docker
+- Deploy de infraestrutura (PostgreSQL, RabbitMQ)
+- Deploy de todos os microserviços
+- Deploy do frontend
+- Configuração do arquivo hosts
+- Validação do sistema
 
 **⏱️ Tempo total**: 10-20 minutos (primeira vez)
 
@@ -395,18 +395,18 @@ O método recomendado é usar `full-deploy.ps1`, mas existem alternativas:
 
 - **Desenvolvimento local**: Usar `docker-compose.yml` na raiz
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 distrischool/
-├── 📂 professor-service/            # Professor Service (Spring Boot)
-├── 📂 distrischool-aluno-main/      # Aluno Service
-├── 📂 distrischool-user-service-main/ # User Service
-├── 📂 grades-service/               # Grades Service (NEW)
-├── 📂 communication-service/        # Communication Service (NEW)
-├── 📂 api-gateway/                  # API Gateway (Spring Cloud Gateway)
-├── 📂 frontend/                     # Frontend (React + Vite + Nginx)
-├── 📂 k8s-manifests/                # Kubernetes manifests
+├── professor-service/            # Professor Service (Spring Boot)
+├── distrischool-aluno-main/      # Aluno Service
+├── distrischool-user-service-main/ # User Service
+├── grades-service/               # Grades Service (NEW)
+├── communication-service/        # Communication Service (NEW)
+├── api-gateway/                  # API Gateway (Spring Cloud Gateway)
+├── frontend/                     # Frontend (React + Vite + Nginx)
+├── k8s-manifests/                # Kubernetes manifests
 │   ├── postgres/                    # PostgreSQL deployment
 │   ├── rabbitmq/                    # RabbitMQ deployment
 │   ├── professor-service/           # Professor Service deployment
@@ -418,18 +418,18 @@ distrischool/
 │   ├── frontend/                    # Frontend deployment
 │   ├── monitoring/                  # Prometheus & Grafana stack (NEW)
 │   └── ingress.yaml                 # Ingress rules
-├── 📂 tests/k6/                     # Load testing with k6 (NEW)
+├── tests/k6/                     # Load testing with k6 (NEW)
 │   ├── load-test.js                 # Main load test script
 │   └── README.md                    # k6 documentation
-├── 🔧 full-deploy.ps1               # Script de deploy automatizado
-├── 🔧 clean-setup.ps1               # Script de limpeza
-├── 🔧 run-load-test.ps1             # Load testing script (Windows) (NEW)
-├── 🔧 run-load-test.sh              # Load testing script (Linux/Mac) (NEW)
-├── 📄 LOAD_TESTING_GUIDE.md         # Guia de testes de carga (NEW)
-└── 📄 docker-compose.yml            # Docker Compose para dev local
+├── full-deploy.ps1               # Script de deploy automatizado
+├── clean-setup.ps1               # Script de limpeza
+├── run-load-test.ps1             # Load testing script (Windows) (NEW)
+├── run-load-test.sh              # Load testing script (Linux/Mac) (NEW)
+├── LOAD_TESTING_GUIDE.md         # Guia de testes de carga (NEW)
+└── docker-compose.yml            # Docker Compose para dev local
 ```
 
-## 🔌 Endpoints da API
+## Endpoints da API
 
 ### URL Base
 - **Com Ingress**: `http://distrischool.local/api`
@@ -526,11 +526,11 @@ distrischool/
 
 **Nota**: As notificações são criadas automaticamente quando eventos ocorrem no sistema (ex: lançamento de notas).
 
-## 🧪 Testes
+## Testes
 
 ### Testando Arquitetura de Microserviços
 
-O projeto inclui testes práticos para **provar** a implementação de microserviços:
+O projeto inclui testes práticos para demonstrar a implementação de microserviços:
 
 ```powershell
 # Testar independência dos serviços
@@ -579,11 +579,11 @@ cd distrischool-user-service-main/user-service
 ./mvnw clean test
 ```
 
-## 📊 Monitoramento
+## Monitoramento
 
-### Health Checks
+### Verificações de Saúde
 
-Todos os serviços expõem endpoints de health via Spring Boot Actuator:
+Todos os serviços expõem endpoints de saúde via Spring Boot Actuator:
 
 ```powershell
 # Via API Gateway
@@ -638,9 +638,9 @@ Visualize:
 - Uso de recursos (CPU, memória)
 - Eventos do cluster
 
-## 🚀 Testes de Carga (k6)
+## Testes de Carga (k6)
 
-O DistriSchool inclui uma suíte completa de testes de carga usando **k6** para validar performance, escalabilidade e resiliência do sistema sob stress.
+O DistriSchool inclui uma suíte completa de testes de carga usando k6 para validar performance, escalabilidade e resiliência do sistema sob stress.
 
 ### Execução Rápida
 
@@ -676,19 +676,19 @@ http://localhost:30090
 ```
 
 Observe em tempo real:
-- 📈 Requisições por segundo (RPS)
-- ⏱️ Latência (P95, P99)
-- 🔴 Taxa de erro
-- 💻 CPU/Memória dos pods
-- 📊 Mensagens RabbitMQ
+- Requisições por segundo (RPS)
+- Latência (P95, P99)
+- Taxa de erro
+- CPU/Memória dos pods
+- Mensagens RabbitMQ
 
 ### Thresholds de Qualidade
 
-- ✅ P95 latency < 500ms
-- ✅ Error rate < 10%
-- ✅ 95% de checks bem-sucedidos
+- P95 latency < 500ms
+- Error rate < 10%
+- 95% de checks bem-sucedidos
 
-## 📨 Mensageria (RabbitMQ)
+## Mensageria (RabbitMQ)
 
 O sistema usa eventos assíncronos para comunicação entre serviços:
 
@@ -719,7 +719,7 @@ public void handleProfessorCreated(Professor professor) {
 }
 ```
 
-## 🔧 Desenvolvimento Local
+## Desenvolvimento Local
 
 ### Backend (sem Kubernetes)
 
@@ -745,9 +745,9 @@ npm run dev
 
 Acesse: http://localhost:5173
 
-## � CI/CD Pipeline (GitHub Actions)
+## Pipeline de CI/CD (GitHub Actions)
 
-O DistriSchool implementa um **pipeline de CI/CD completo e automatizado** utilizando **GitHub Actions com Self-Hosted Runners** para máxima segurança, performance e controle sobre a infraestrutura de integração e deploy.
+O DistriSchool implementa um pipeline de CI/CD completo e automatizado utilizando GitHub Actions com runners auto-hospedados para máxima segurança, performance e controle sobre a infraestrutura de integração e deploy.
 
 ### Visão Geral da Pipeline
 
@@ -780,14 +780,14 @@ O DistriSchool implementa um **pipeline de CI/CD completo e automatizado** utili
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Arquitetura de Self-Hosted Runners
+### Arquitetura de Runners Auto-Hospedados
 
-**Por que Self-Hosted Runners?**
-- ✅ **Segurança**: Código proprietário não sai da infraestrutura privada
-- ✅ **Performance**: Runners na mesma rede reduz latência de deploy
-- ✅ **Custo**: Reduz bill do GitHub Actions (runners escaláveis)
-- ✅ **Controle**: Customização completa do ambiente
-- ✅ **Compliance**: Logs e auditoria sob controle total
+**Por que Runners Auto-Hospedados?**
+- Segurança: Código proprietário não sai da infraestrutura privada
+- Performance: Runners na mesma rede reduz latência de deploy
+- Custo: Reduz bill do GitHub Actions (runners escaláveis)
+- Controle: Customização completa do ambiente
+- Conformidade: Logs e auditoria sob controle total
 
 **Configuração do Runner**:
 ```bash
@@ -850,10 +850,10 @@ Security:
 ```
 
 **Rejeição de PR Se**:
-- ❌ Vulnerabilidades críticas encontradas
-- ❌ Código complexity acima de threshold
-- ❌ Coverage drops > 5%
-- ❌ Falha em testes
+- Vulnerabilidades críticas encontradas
+- Código complexity acima de threshold
+- Coverage drops > 5%
+- Falha em testes
 
 #### 3. **BUILD CONTAINERS Stage**
 ```yaml
@@ -886,12 +886,12 @@ Production Deploy (Manual):
 
 | Métrica | Alvo | Atual |
 |---------|------|-------|
-| **Tempo de Build** | < 5 min | 3.2 min ✅ |
-| **Tempo de Deploy** | < 10 min | 7.5 min ✅ |
-| **Test Coverage** | > 80% | 84% ✅ |
-| **Security Scanning** | 0 Critical CVEs | 0 CVEs ✅ |
-| **Uptime da Pipeline** | 99.9% | 99.95% ✅ |
-| **Mean Time to Deploy (MTTR)** | < 30 min | 12 min ✅ |
+| **Tempo de Build** | < 5 min | 3.2 min |
+| **Tempo de Deploy** | < 10 min | 7.5 min |
+| **Test Coverage** | > 80% | 84% |
+| **Security Scanning** | 0 Critical CVEs | 0 CVEs |
+| **Uptime da Pipeline** | 99.9% | 99.95% |
+| **Mean Time to Deploy (MTTR)** | < 30 min | 12 min |
 
 ### Acessibilidade da Pipeline
 
@@ -906,7 +906,7 @@ https://github.com/bmatox/distrischool-professor-tecadm-service/settings/actions
 curl https://api.github.com/repos/bmatox/distrischool-professor-tecadm-service/check-runs
 ```
 
-## �🐛 Troubleshooting
+## Troubleshooting
 
 ### Problemas Comuns
 
@@ -961,7 +961,7 @@ curl http://localhost:8082/api/v1/professores
 # Ver logs do API Gateway
 kubectl logs deployment/api-gateway-deployment
 ```
-## 🧹 Limpando o Ambiente
+## Limpando o Ambiente
 
 Para remover completamente o ambiente:
 
