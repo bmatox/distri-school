@@ -18,8 +18,36 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          # ─── Resource Management (Gateway precisa de mais recursos) ───
+          resources:
+            requests:
+              memory: "1Gi"       # Gateway precisa de mais memória (alta concorrência)
+              cpu: "500m"         # 0.5 cores
+            limits:
+              memory: "2Gi"       # Máximo 2GB
+              cpu: "2000m"        # Até 2 cores em bursts
+          # ─── Health Checks ───
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 3
           env:
-            # --- Configurações de JWT ---
+            # ─── JVM Configuration (75% de 2Gi = 1536Mi) ───
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx1536m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseContainerSupport"
+            # ─── Configurações de JWT ───
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

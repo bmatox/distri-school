@@ -18,3 +18,28 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+          # ─── Resource Management (Nginx é muito leve) ───
+          resources:
+            requests:
+              memory: "64Mi"     # Nginx consome pouca memória
+              cpu: "50m"         # 0.05 cores
+            limits:
+              memory: "128Mi"    # Máximo 128MB
+              cpu: "200m"        # Máximo 0.2 cores
+          # ─── Health Checks (Nginx padrão) ───
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 2

@@ -18,7 +18,36 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8083
+        # ─── Resource Management ───
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        # ─── Health Checks ───
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8083
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          failureThreshold: 3
+          timeoutSeconds: 3
         env:
+        # ─── JVM Configuration ───
+        - name: JAVA_OPTS
+          value: "-Xms256m -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseContainerSupport"
+        # ─── Database Configuration ───
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:postgresql://postgres-service:5432/distrischool_db"
         - name: SPRING_DATASOURCE_USERNAME

@@ -18,8 +18,39 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
+          # ─── Resource Management ───
+          # Garantir recursos e limitar consumo para evitar Noisy Neighbor
+          resources:
+            requests:
+              memory: "512Mi"    # Mínimo garantido pelo scheduler
+              cpu: "250m"        # 0.25 cores = suporta ~100 req/s
+            limits:
+              memory: "1Gi"      # Máximo (OOMKill se exceder)
+              cpu: "1000m"       # Máximo (throttled se exceder)
+          # ─── Health Checks ───
+          # Kubernetes usa esses endpoints para gerenciar lifecycle do pod
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 60   # Tempo para JVM iniciar
+            periodSeconds: 10         # Verifica a cada 10s
+            failureThreshold: 3       # Reinicia após 3 falhas
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 30   # Começa a verificar após 30s
+            periodSeconds: 5          # Verifica a cada 5s
+            failureThreshold: 3       # Remove do service após 3 falhas
+            timeoutSeconds: 3
           env:
-            # --- Configurações de Banco de Dados ---
+            # ─── JVM Configuration ───
+            # Alinhar heap da JVM com limites do container (75% do limit = 768Mi)
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseContainerSupport"
+            # ─── Configurações de Banco de Dados ───
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://postgres-service:5432/distrischool_db"
             - name: SPRING_DATASOURCE_USERNAME
