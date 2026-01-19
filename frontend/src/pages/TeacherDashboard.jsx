@@ -28,12 +28,16 @@ function TeacherDashboard() {
           </div>
         </div>
 
-        <div className="dashboard-card students">
+        <div 
+          className="dashboard-card students clickable" 
+          onClick={() => navigate('/notas')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-icon"><BarChart3 size={48} /></div>
           <h2>Lançar Notas</h2>
           <p>Registre notas de avaliações, trabalhos e atividades dos alunos</p>
           <div className="card-actions">
-            <span className="dev-badge">Em desenvolvimento</span>
+            <span>Lançar Notas</span>
           </div>
         </div>
 

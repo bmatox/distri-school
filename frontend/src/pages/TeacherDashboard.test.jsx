@@ -46,15 +46,17 @@ describe('TeacherDashboard - Badge "Em desenvolvimento"', () => {
       expect(badge).not.toBeInTheDocument();
     });
 
-    it('should display "Em desenvolvimento" badge for "Lançar Notas"', () => {
+    it('should NOT display "Em desenvolvimento" badge for "Lançar Notas" (feature implemented)', () => {
       renderWithRouter(<TeacherDashboard />);
-      expect(screen.getByText('Lançar Notas')).toBeInTheDocument();
+      const allTexts = screen.getAllByText('Lançar Notas');
+      expect(allTexts.length).toBeGreaterThan(0);
       
-      const card = screen.getByText('Lançar Notas').closest('.dashboard-card');
+      // Find the h2 element
+      const h2Element = allTexts.find(el => el.tagName === 'H2');
+      const card = h2Element.closest('.dashboard-card');
       const badge = card.querySelector('.dev-badge');
       
-      expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent('Em desenvolvimento');
+      expect(badge).not.toBeInTheDocument();
     });
 
     it('should display "Em desenvolvimento" badge for "Chamada e Frequência"', () => {
@@ -103,10 +105,10 @@ describe('TeacherDashboard - Badge "Em desenvolvimento"', () => {
   });
 
   describe('Validação Completa dos Badges', () => {
-    it('should have exactly 5 dev-badges in the dashboard', () => {
+    it('should have exactly 4 dev-badges in the dashboard', () => {
       renderWithRouter(<TeacherDashboard />);
       const devBadges = screen.getAllByText('Em desenvolvimento');
-      expect(devBadges).toHaveLength(5);
+      expect(devBadges).toHaveLength(4);
     });
 
     it('should apply correct CSS class to all dev badges', () => {
