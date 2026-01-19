@@ -28,9 +28,15 @@ function MinhasTurmasPage() {
         return;
       }
 
+      console.log('🔍 Buscando professor com userId:', user.userId);
+
       // Buscar professor pelo userId
       const professores = await professorService.getAll();
+      console.log('👥 Total de professores retornados:', professores.length);
+      console.log('👥 Professores:', professores);
+      
       const professor = professores.find(p => p.userId === user.userId);
+      console.log('👤 Professor encontrado:', professor);
       
       if (!professor) {
         setError('Professor não encontrado no sistema');
@@ -40,7 +46,11 @@ function MinhasTurmasPage() {
       setCurrentProfessor(professor);
 
       // Buscar disciplinas do professor
+      console.log('📚 Buscando disciplinas do professor ID:', professor.id);
       const disciplinasData = await disciplinaService.getByProfessor(professor.id);
+      console.log('📚 Disciplinas retornadas:', disciplinasData);
+      console.log('📚 Total de disciplinas:', disciplinasData?.length || 0);
+      
       setDisciplinas(disciplinasData || []);
 
       // Buscar estatísticas de alunos por turma
@@ -48,7 +58,7 @@ function MinhasTurmasPage() {
       
       setError(null);
     } catch (err) {
-      console.error('Erro ao carregar turmas:', err);
+      console.error('❌ Erro ao carregar turmas:', err);
       setError('Erro ao carregar suas turmas. Por favor, tente novamente.');
     } finally {
       setLoading(false);
