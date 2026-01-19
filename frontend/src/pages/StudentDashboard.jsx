@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { alunoService } from '../services/alunoService';
 import { useNavigate } from 'react-router-dom';
-import { ClipboardList, BookOpen, FileText, Calendar, Book, BarChart3, MessageSquare, Target, Megaphone } from 'lucide-react';
+import { ClipboardList, BookOpen, FileText, Calendar, Book, BarChart3, MessageSquare } from 'lucide-react';
 import './RoleDashboard.css';
 
 function StudentDashboard() {
@@ -103,21 +103,6 @@ function StudentDashboard() {
           <div className="card-actions">
             <span className="dev-badge">Em desenvolvimento</span>
           </div>
-        </div>
-      </div>
-
-      <div className="dashboard-info">
-        <div className="info-card">
-          <h3><ClipboardList size={20} style={{display: 'inline', marginRight: '8px'}} />Histórico Acadêmico</h3>
-          <p>Consulte seu histórico completo com disciplinas cursadas e desempenho</p>
-        </div>
-        <div className="info-card">
-          <h3><Target size={20} style={{display: 'inline', marginRight: '8px'}} />Calendário Acadêmico</h3>
-          <p>Fique atento às datas importantes: provas, trabalhos e eventos</p>
-        </div>
-        <div className="info-card">
-          <h3><Megaphone size={20} style={{display: 'inline', marginRight: '8px'}} />Avisos e Comunicados</h3>
-          <p>Mantenha-se informado sobre avisos da instituição e da sua turma</p>
         </div>
       </div>
     </div>

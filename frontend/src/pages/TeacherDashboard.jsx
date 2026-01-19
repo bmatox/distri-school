@@ -1,5 +1,5 @@
 import { useAuth } from '../context/AuthContext';
-import { UserCheck, BarChart3, CheckSquare, BookOpen, FileText, Book, TrendingUp, Calendar, MessageSquare } from 'lucide-react';
+import { UserCheck, BarChart3, CheckSquare, BookOpen, FileText, Book } from 'lucide-react';
 import './RoleDashboard.css';
 
 function TeacherDashboard() {
@@ -65,21 +65,6 @@ function TeacherDashboard() {
           <div className="card-actions">
             <span className="dev-badge">Em desenvolvimento</span>
           </div>
-        </div>
-      </div>
-
-      <div className="dashboard-info">
-        <div className="info-card">
-          <h3><TrendingUp size={20} style={{display: 'inline', marginRight: '8px'}} />Relatórios de Desempenho</h3>
-          <p>Acompanhe estatísticas e análises de desempenho das turmas</p>
-        </div>
-        <div className="info-card">
-          <h3><Calendar size={20} style={{display: 'inline', marginRight: '8px'}} />Calendário de Aulas</h3>
-          <p>Consulte seu horário de aulas e eventos acadêmicos</p>
-        </div>
-        <div className="info-card">
-          <h3><MessageSquare size={20} style={{display: 'inline', marginRight: '8px'}} />Comunicação</h3>
-          <p>Entre em contato com alunos, pais e coordenação pedagógica</p>
         </div>
       </div>
     </div>

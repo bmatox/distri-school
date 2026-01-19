@@ -133,13 +133,4 @@ describe('TechnicalAdminDashboard - Badge "Em desenvolvimento"', () => {
       expect(cardActions.length).toBeGreaterThanOrEqual(6);
     });
   });
-
-  describe('Info Cards Section', () => {
-    it('should render info cards section', () => {
-      renderWithRouter(<TechnicalAdminDashboard />);
-      expect(screen.getByText('Indicadores de Desempenho')).toBeInTheDocument();
-      expect(screen.getByText('Infraestrutura')).toBeInTheDocument();
-      expect(screen.getByText('Biblioteca e Acervo')).toBeInTheDocument();
-    });
-  });
 });

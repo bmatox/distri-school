@@ -1,5 +1,5 @@
 import { useAuth } from '../context/AuthContext';
-import { FileText, BarChart3, Calendar, File, Bell, Phone, TrendingUp, Building2, BookOpen } from 'lucide-react';
+import { FileText, BarChart3, Calendar, File, Bell, Phone } from 'lucide-react';
 import './RoleDashboard.css';
 
 function TechnicalAdminDashboard() {
@@ -65,21 +65,6 @@ function TechnicalAdminDashboard() {
           <div className="card-actions">
             <span className="dev-badge">Em desenvolvimento</span>
           </div>
-        </div>
-      </div>
-
-      <div className="dashboard-info">
-        <div className="info-card">
-          <h3><TrendingUp size={20} style={{display: 'inline', marginRight: '8px'}} />Indicadores de Desempenho</h3>
-          <p>Acompanhe KPIs e métricas de performance institucional</p>
-        </div>
-        <div className="info-card">
-          <h3><Building2 size={20} style={{display: 'inline', marginRight: '8px'}} />Infraestrutura</h3>
-          <p>Monitore o status da infraestrutura e equipamentos</p>
-        </div>
-        <div className="info-card">
-          <h3><BookOpen size={20} style={{display: 'inline', marginRight: '8px'}} />Biblioteca e Acervo</h3>
-          <p>Gerencie o acervo bibliográfico e empréstimos</p>
         </div>
       </div>
     </div>

@@ -133,13 +133,4 @@ describe('TeacherDashboard - Badge "Em desenvolvimento"', () => {
       expect(cardActions.length).toBeGreaterThanOrEqual(6);
     });
   });
-
-  describe('Info Cards Section', () => {
-    it('should render info cards section', () => {
-      renderWithRouter(<TeacherDashboard />);
-      expect(screen.getByText('Relatórios de Desempenho')).toBeInTheDocument();
-      expect(screen.getByText('Calendário de Aulas')).toBeInTheDocument();
-      expect(screen.getByText('Comunicação')).toBeInTheDocument();
-    });
-  });
 });
