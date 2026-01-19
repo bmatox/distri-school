@@ -1,0 +1,171 @@
+/* Minhas Turmas Page Styles */
+
+.turmas-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.turma-section {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.turma-section:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.turma-header {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+  color: white;
+  padding: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.turma-info h3 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.turma-info p {
+  margin: var(--spacing-xs) 0;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+}
+
+.curso-nome {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.alunos-count {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.periodo-badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.disciplinas-list {
+  padding: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.disciplina-card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.disciplina-card:hover {
+  background: white;
+  border-color: var(--primary-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.disciplina-content h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.disciplina-descricao {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.disciplina-actions {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--gray-200);
+}
+
+.disciplina-id {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  font-family: 'Courier New', monospace;
+}
+
+.page-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.summary-card {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-purple) 100%);
+  color: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card strong {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: var(--spacing-xs);
+}
+
+.summary-card span {
+  display: block;
+  font-size: 0.95rem;
+  opacity: 0.95;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .turma-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .periodo-badge {
+    align-self: flex-end;
+  }
+
+  .disciplinas-list {
+    grid-template-columns: 1fr;
+  }
+
+  .page-summary {
+    grid-template-columns: 1fr;
+  }
+}

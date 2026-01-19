@@ -36,15 +36,14 @@ describe('TeacherDashboard - Badge "Em desenvolvimento"', () => {
   });
 
   describe('Features em Desenvolvimento - Validação dos Badges', () => {
-    it('should display "Em desenvolvimento" badge for "Minhas Turmas"', () => {
+    it('should NOT display "Em desenvolvimento" badge for "Minhas Turmas" (feature implemented)', () => {
       renderWithRouter(<TeacherDashboard />);
       expect(screen.getByText('Minhas Turmas')).toBeInTheDocument();
       
       const card = screen.getByText('Minhas Turmas').closest('.dashboard-card');
       const badge = card.querySelector('.dev-badge');
       
-      expect(badge).toBeInTheDocument();
-      expect(badge).toHaveTextContent('Em desenvolvimento');
+      expect(badge).not.toBeInTheDocument();
     });
 
     it('should display "Em desenvolvimento" badge for "Lançar Notas"', () => {
@@ -104,10 +103,10 @@ describe('TeacherDashboard - Badge "Em desenvolvimento"', () => {
   });
 
   describe('Validação Completa dos Badges', () => {
-    it('should have exactly 6 dev-badges in the dashboard', () => {
+    it('should have exactly 5 dev-badges in the dashboard', () => {
       renderWithRouter(<TeacherDashboard />);
       const devBadges = screen.getAllByText('Em desenvolvimento');
-      expect(devBadges).toHaveLength(6);
+      expect(devBadges).toHaveLength(5);
     });
 
     it('should apply correct CSS class to all dev badges', () => {

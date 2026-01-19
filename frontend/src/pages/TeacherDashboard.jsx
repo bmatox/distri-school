@@ -1,9 +1,11 @@
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { UserCheck, BarChart3, CheckSquare, BookOpen, FileText, Book } from 'lucide-react';
 import './RoleDashboard.css';
 
 function TeacherDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="dashboard">
@@ -13,12 +15,16 @@ function TeacherDashboard() {
       </div>
 
       <div className="dashboard-cards">
-        <div className="dashboard-card professors">
+        <div 
+          className="dashboard-card professors clickable" 
+          onClick={() => navigate('/minhas-turmas')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className="card-icon"><UserCheck size={48} /></div>
           <h2>Minhas Turmas</h2>
           <p>Gerencie suas turmas, visualize alunos matriculados e informações das disciplinas</p>
           <div className="card-actions">
-            <span className="dev-badge">Em desenvolvimento</span>
+            <span>Ver Minhas Turmas</span>
           </div>
         </div>
 

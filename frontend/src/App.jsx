@@ -16,6 +16,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import CursoTurmaPage from './pages/CursoTurmaPage';
 import DisciplinaPage from './pages/DisciplinaPage';
 import MatriculaPage from './pages/MatriculaPage';
+import MinhasTurmasPage from './pages/MinhasTurmasPage';
 import Login from './pages/Login';
 import './App.css';
 
@@ -121,6 +122,14 @@ function App() {
                         element={
                           <ProtectedRoute requiredRole="STUDENT">
                             <MatriculaPage />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/minhas-turmas" 
+                        element={
+                          <ProtectedRoute requiredRole="TEACHER">
+                            <MinhasTurmasPage />
                           </ProtectedRoute>
                         } 
                       />
