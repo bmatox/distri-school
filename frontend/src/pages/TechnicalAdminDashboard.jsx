@@ -18,7 +18,7 @@ function TechnicalAdminDashboard() {
           <h2>Relatórios Gerenciais</h2>
           <p>Gere e visualize relatórios administrativos e estatísticas institucionais</p>
           <div className="card-actions">
-            <span>Ver Relatórios</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -27,7 +27,7 @@ function TechnicalAdminDashboard() {
           <h2>Gestão de Recursos</h2>
           <p>Administre recursos físicos, salas de aula e equipamentos</p>
           <div className="card-actions">
-            <span>Gerenciar Recursos</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ function TechnicalAdminDashboard() {
           <h2>Agendamento de Salas</h2>
           <p>Controle e gerencie o agendamento de salas e laboratórios</p>
           <div className="card-actions">
-            <span>Ver Agendamentos</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ function TechnicalAdminDashboard() {
           <h2>Documentação</h2>
           <p>Gerencie documentos administrativos e processos institucionais</p>
           <div className="card-actions">
-            <span>Ver Documentos</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ function TechnicalAdminDashboard() {
           <h2>Comunicados</h2>
           <p>Publique avisos e comunicados para a comunidade acadêmica</p>
           <div className="card-actions">
-            <span>Gerenciar Comunicados</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ function TechnicalAdminDashboard() {
           <h2>Atendimento</h2>
           <p>Gerencie solicitações e atendimentos de alunos e professores</p>
           <div className="card-actions">
-            <span>Ver Solicitações</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ function TeacherDashboard() {
           <h2>Minhas Turmas</h2>
           <p>Gerencie suas turmas, visualize alunos matriculados e informações das disciplinas</p>
           <div className="card-actions">
-            <span>Ver Turmas</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -27,7 +27,7 @@ function TeacherDashboard() {
           <h2>Lançar Notas</h2>
           <p>Registre notas de avaliações, trabalhos e atividades dos alunos</p>
           <div className="card-actions">
-            <span>Lançar Notas</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -36,7 +36,7 @@ function TeacherDashboard() {
           <h2>Chamada e Frequência</h2>
           <p>Faça a chamada diária e acompanhe a frequência dos alunos</p>
           <div className="card-actions">
-            <span>Fazer Chamada</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ function TeacherDashboard() {
           <h2>Plano de Aula</h2>
           <p>Organize e compartilhe planos de aula e cronogramas</p>
           <div className="card-actions">
-            <span>Ver Planos</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ function TeacherDashboard() {
           <h2>Avaliações</h2>
           <p>Crie e gerencie avaliações, provas e trabalhos</p>
           <div className="card-actions">
-            <span>Ver Avaliações</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ function TeacherDashboard() {
           <h2>Material Didático</h2>
           <p>Publique e gerencie materiais de apoio para suas disciplinas</p>
           <div className="card-actions">
-            <span>Gerenciar Material</span>
+            <span className="dev-badge">Em desenvolvimento</span>
           </div>
         </div>
       </div>
