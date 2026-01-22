@@ -906,61 +906,6 @@ https://github.com/bmatox/distrischool-professor-tecadm-service/settings/actions
 curl https://api.github.com/repos/bmatox/distrischool-professor-tecadm-service/check-runs
 ```
 
-## Troubleshooting
-
-### Problemas Comuns
-
-**1. Pods não iniciam (ImagePullBackOff)**
-```powershell
-# Verificar se Docker está usando daemon do Minikube
-minikube docker-env --shell powershell | Invoke-Expression
-
-# Verificar imagens disponíveis
-docker images | Select-String "distrischool"
-
-# Se necessário, rebuildar
-cd professor-service
-docker build -t distrischool-professor-tecadm-service:latest .
-```
-
-**2. Serviço não inicia (CrashLoopBackOff)**
-```bash
-# Ver logs do pod
-kubectl logs <pod-name>
-
-# Verificar detalhes
-kubectl describe pod <pod-name>
-
-# Comum: Erro de conexão com PostgreSQL ou RabbitMQ
-# Verificar se infraestrutura está rodando
-kubectl get pods | grep -E "postgres|rabbitmq"
-```
-
-**3. Frontend não carrega**
-```powershell
-# Verificar se minikube tunnel está rodando
-# Deve haver um terminal executando: minikube tunnel
-
-# Verificar arquivo hosts
-Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "distrischool"
-
-# Adicionar se necessário (como Admin)
-Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "`n127.0.0.1 distrischool.local"
-
-# Limpar cache DNS
-ipconfig /flushdns
-```
-
-**4. API retorna 404**
-```powershell
-# Testar diretamente o serviço
-kubectl port-forward deployment/professor-tecadm-deployment 8082:8082
-curl http://localhost:8082/api/v1/professores
-
-# Se funcionar, problema está no API Gateway ou Ingress
-# Ver logs do API Gateway
-kubectl logs deployment/api-gateway-deployment
-```
 ## Limpando o Ambiente
 
 Para remover completamente o ambiente:
